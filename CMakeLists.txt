@@ -17,6 +17,9 @@ find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(laser_geometry REQUIRED)
+find_package(tf2 REQUIRED)
+find_package(tf2_ros REQUIRED)
+find_package(geometry_msgs REQUIRED)
 #ament_auto_find_build_dependencies(REQUIRED sensor_msgs)
 
 # Converter Node
@@ -27,8 +30,16 @@ target_include_directories(converter_2d_to_3d PUBLIC
   $<INSTALL_INTERFACE:include>)
 target_compile_features(converter_2d_to_3d PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
 
+# IMU Node
+add_executable(imu src/IMU.cpp src/IMUFramePublisher.cpp)
+ament_target_dependencies(imu geometry_msgs rclcpp tf2 tf2_ros std_msgs sensor_msgs laser_geometry)
+target_include_directories(imu PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+target_compile_features(imu PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+
 # Install Nodes into ROS 2
-install(TARGETS converter_2d_to_3d
+install(TARGETS converter_2d_to_3d imu
   DESTINATION lib/${PROJECT_NAME})
   
 install(DIRECTORY description launch rviz

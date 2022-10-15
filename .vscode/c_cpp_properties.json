@@ -1,32 +1,31 @@
 {
-  "configurations": [
-    {
-      "browse": {
-        "databaseFilename": "${default}",
-        "limitSymbolsToIncludedHeaders": false
-      },
-      "includePath": [
-        "${config:workspace_dir}/install/${config:package_name}/include/**",
-        "${config:workspace_dir}/src/${config:package_name}/include/**",
-        "${workspaceFolder}/include/**",
-        "${config:workspace_dir}/src/${config:package_name}/sdk/include/**",
-        "${config:workspace_dir}/src/${config:package_name}/sdk/src",
-        "${workspaceFolder}/sdk/include/**",
-        "${workspaceFolder}/sdk/src",
-
-        "${config:ros2_dir}/include/**",
-        "/usr/include/**",
-        
-        "${config:workspace_dir}/src/rplidar_ros2/include",
-        "${config:workspace_dir}/src/slamtec_rplidar_ros2/sdk/include",
-        "${config:workspace_dir}/src/slamtec_rplidar_ros2/sdk/src"
-      ],
-      "name": "ROS",
-      "intelliSenseMode": "gcc-x64",
-      "compilerPath": "/usr/bin/gcc",
-      "cStandard": "gnu11",
-      "cppStandard": "c++14"
-    }
-  ],
-  "version": 4
+    "configurations": [
+        {
+            "browse": {
+                "databaseFilename": "${default}",
+                "limitSymbolsToIncludedHeaders": false
+            },
+            "includePath": [
+                "${config:workspace_dir}/install/${config:package_name}/include/**",
+                "${config:workspace_dir}/src/${config:package_name}/include/**",
+                "${workspaceFolder}/include/**",
+                "${config:workspace_dir}/src/${config:package_name}/sdk/include/**",
+                "${config:workspace_dir}/src/${config:package_name}/sdk/src",
+                "${workspaceFolder}/sdk/include/**",
+                "${workspaceFolder}/sdk/src",
+                "${config:ros2_dir}/include/**",
+                "/usr/include/**",
+                "${config:workspace_dir}/src/rplidar_ros2/include",
+                "${config:workspace_dir}/src/slamtec_rplidar_ros2/sdk/include",
+                "${config:workspace_dir}/src/slamtec_rplidar_ros2/sdk/src",
+                "/opt/ros/humble/include/sensor_msgs"
+            ],
+            "name": "ROS",
+            "intelliSenseMode": "gcc-x64",
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "gnu11",
+            "cppStandard": "c++14"
+        }
+    ],
+    "version": 4
 }

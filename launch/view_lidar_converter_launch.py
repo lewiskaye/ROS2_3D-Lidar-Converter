@@ -20,6 +20,9 @@ def generate_launch_description():
     inverted = LaunchConfiguration('inverted', default='false')
     angle_compensate = LaunchConfiguration('angle_compensate', default='true')
 
+    # Parameters for IMU Default Child Link/Frame
+    imu_frame = LaunchConfiguration('imu_frame', default='imu_angle_adjustment')
+
     # Check if we're told to use sim time
     use_sim_time = LaunchConfiguration('use_sim_time')
 
@@ -72,6 +75,11 @@ def generate_launch_description():
             'use_sim_time',
             default_value='false',
             description='Use sim time if true'),
+        # child_frame for IMU
+        DeclareLaunchArgument(
+            'imu_frame',
+            default_value=imu_frame,
+            description='Default child frame for the IMU to use'),
 
         # Launch Robot State Publisher - publishes the state of the robot
         node_robot_state_publisher,
@@ -95,12 +103,27 @@ def generate_launch_description():
             name='converter_2d_to_3d',
             output='screen'),
 
+        #IMU Node
+        Node(
+            package='lidar_converter',
+            executable='imu',
+            name='imu',
+            parameters=[{'imu_frame': imu_frame}],
+            output='screen'),
+
         # RViz
         Node(
             package='rviz2',
             executable='rviz2',
             name='rviz2',
             arguments=['-d', rviz_config_dir],
+            output='screen'),
+
+        # RViz
+        Node(
+            package='joint_state_publisher_gui',
+            executable='joint_state_publisher_gui',
+            name='joint_state_publisher_gui',
             output='screen'),
     ])
 

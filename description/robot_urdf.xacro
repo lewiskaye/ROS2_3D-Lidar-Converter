@@ -1,8 +1,19 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="lidar_assembly">
 
-    <xacro:include filename="robot_core.xacro" />
+    <!-- Import Colours -->
+    <xacro:include filename="colours.xacro" />
 
+    <!-- Define Base Link-->
+    <link name="base_link">
+        
+    </link>
 
+    <!-- <xacro:include filename="imu_standalone.xacro" /> -->
+    <!-- <xacro:include filename="lidar_standalone.xacro" /> -->
+
+    <xacro:include filename="mounting_system.xacro" />
+    <xacro:include filename="imu.xacro" />
+    <xacro:include filename="lidar.xacro" />
 
 </robot>

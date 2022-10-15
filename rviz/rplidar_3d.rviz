@@ -6,7 +6,10 @@ Panels:
       Expanded:
         - /Global Options1
         - /Status1
-        - /RobotModel1/Mass Properties1
+        - /RobotModel1/Links1
+        - /TF1/Tree1
+        - /TF1/Tree1/base_link1
+        - /TF1/Tree1/base_link1/imu_angle_adjustment1
       Splitter Ratio: 0.5
     Tree Height: 691
   - Class: rviz_common/Selection
@@ -105,13 +108,13 @@ Visualization Manager:
       Class: rviz_default_plugins/PointCloud2
       Color: 255; 255; 255
       Color Transformer: Intensity
-      Decay Time: 0
+      Decay Time: 2.5
       Enabled: true
       Invert Rainbow: false
       Max Color: 255; 255; 255
-      Max Intensity: 719
+      Max Intensity: 708
       Min Color: 0; 0; 0
-      Min Intensity: 0
+      Min Intensity: 55
       Name: PointCloud2
       Position Transformer: XYZ
       Selectable: true
@@ -147,6 +150,10 @@ Visualization Manager:
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
         base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        imu_angle_adjustment:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -190,6 +197,8 @@ Visualization Manager:
         All Enabled: false
         base_link:
           Value: true
+        imu_angle_adjustment:
+          Value: true
         imu_sensor:
           Value: false
         lidar_sensor:
@@ -207,13 +216,14 @@ Visualization Manager:
       Show Names: true
       Tree:
         base_link:
-          stepper_motor:
-            mounting_plate_arm:
-              mounting_plate_base:
-                imu_sensor:
-                  {}
-                lidar_sensor:
-                  {}
+          imu_angle_adjustment:
+            stepper_motor:
+              mounting_plate_arm:
+                mounting_plate_base:
+                  imu_sensor:
+                    {}
+                  lidar_sensor:
+                    {}
       Update Interval: 0
       Value: true
   Enabled: true
@@ -260,25 +270,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 2.6839468479156494
+      Distance: 2.896437168121338
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -0.07298140227794647
-        Y: -0.024195989593863487
-        Z: -0.036893777549266815
+        X: -0.07952453941106796
+        Y: -0.057359255850315094
+        Z: -0.10299398750066757
       Focal Shape Fixed Size: false
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.3447968363761902
+      Pitch: 0.33479684591293335
       Target Frame: base_link
       Value: Orbit (rviz)
-      Yaw: 3.7254104614257812
+      Yaw: 3.8504104614257812
     Saved: ~
 Window Geometry:
   Displays:

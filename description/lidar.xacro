@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!-- LiDAR Link and Joint -->
+    <joint name="lidar_joint" type="fixed">
+        <parent link="mounting_plate_base"/>
+        <child link="lidar_sensor"/>
+        <origin xyz="0 0 0.045" rpy="0 0 ${pi}"/>
+    </joint>
+
+
+    <link name="lidar_sensor">
+        <visual>
+            <origin xyz="0 0 -0.00125"/>
+            <geometry>
+                <cylinder radius="0.035" length="0.0225"/>
+                <!-- <mesh filename="file://$(find lidar_converter)/description/RPLiDAR.stl" scale="1 1 1"/> -->
+            </geometry>
+            <material name="black"/>
+        </visual>
+        <collision>
+            <origin xyz="0 0 -0.00125"/>
+            <geometry>
+                <cylinder radius="0.035" length="0.0225"/>
+            </geometry>
+        </collision>
+    </link>
+    
+</robot>

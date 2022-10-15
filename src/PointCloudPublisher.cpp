@@ -12,7 +12,7 @@ PointCloudPublisher::PointCloudPublisher() : Node("converter_2d_to_3d")
 }
 
 // Method invoked when an new message is detected from the topic
-void PointCloudPublisher::publish_pointcloud(sensor_msgs::msg::PointCloud2 & pc)
+void PointCloudPublisher::publish_pointcloud(sensor_msgs::msg::PointCloud2 &pc)
 {
     //Place Logic here if needed
 
