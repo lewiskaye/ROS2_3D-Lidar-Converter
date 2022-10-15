@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="lidar_assembly">
+
+    <xacro:include filename="robot_core.xacro" />
+
+
+
+</robot>

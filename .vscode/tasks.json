@@ -1,0 +1,151 @@
+{
+    // The following pre-launch tasks are custom-made by Lewis Kaye 2022 for development with ROS2 on Ubuntu.  
+    // Please configure your Settings.json file correctly.  
+    // Ensure you are opening your workspace folder, not your package folder, as a project (e.g. ros2_ws)
+
+    "tasks": [
+
+        // Colcon Build and Run in DEBUG Mode
+        {
+            "label": "build_and_debug",
+            "command": "source ${config:ros2_dir}/setup.bash && cd ${config:workspace_dir} && colcon build --packages-select ${config:package_name} --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=${config:DCMAKE_BUILD_TYPE} && echo Build Complete.  Please check the Output for any errors.  A successfully compiled build will show 'Finished' even if there are warnings. && echo && source ${config:workspace_dir}/install/local_setup.bash && gnome-terminal -- bash -c '${config:commands_before_launch}; exec bash' && gnome-terminal -- bash -c '${config:launch_command_debug}; exec bash'",
+            "type": "shell",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "showReuseMessage": false,
+                "clear": true
+            },
+            "detail": "Custom task to start ROS2, colcon build with debug flags, source workspace, and ros2 run with GDB Server.",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+
+        // Colcon Build and Run in RELEASE Mode
+        {
+            "label": "build_and_run",
+            "command": "source ${config:ros2_dir}/setup.bash && cd ${config:workspace_dir} && colcon build --packages-select ${config:package_name} --symlink-install && echo Build Complete.  Please check the Output for any errors.  A successfully compiled build will show 'Finished' even if there are warnings. && echo && source ${config:workspace_dir}/install/local_setup.bash && gnome-terminal -- bash -c '${config:commands_before_launch}; exec bash' && gnome-terminal -- bash -c '${config:launch_command_release}; exec bash'",
+            "type": "shell",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "showReuseMessage": false,
+                "clear": true
+            },
+            "detail": "Custom task to start ROS2, colcon build with debug flags, source workspace, and ros2 run with GDB Server.",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+
+        // Colcon Build for DEBUG
+        {
+            "label": "colcon_build",
+            "command": "cd ${config:workspace_dir} && colcon build --packages-select ${config:package_name} --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=${config:DCMAKE_BUILD_TYPE} && echo Build Complete.  Please check the Output for any errors.  A successfully compiled build will show 'Finished' even if there are warnings.  ; echo ;",
+            "type": "shell",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false,
+                "group": "build"
+            },
+            "detail": "Custom task for ROS2 to build package using colcon"
+        },
+
+        // Colcon Build for RELEASE
+        {
+            "label": "colcon_build_release",
+            "command": "cd ${config:workspace_dir} && colcon build --packages-select ${config:package_name} --symlink-install && echo Build Complete.  Please check the Output for any errors.  A successfully compiled build will show 'Finished' even if there are warnings.  ; echo ;",
+            "type": "shell",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false,
+                "group": "build"
+            },
+            "detail": "Custom task for ROS2 to build package using colcon"
+        },
+
+        // Colcon Build ALL DEBUG
+        {
+            "label": "colcon_build_all_debug",
+            "command": "cd ${config:workspace_dir} && colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=${config:DCMAKE_BUILD_TYPE} && echo Build Complete.  Please check the Output for any errors.  A successfully compiled build will show 'Finished' even if there are warnings.  ; echo ;",
+            "type": "shell",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false,
+                "group": "build"
+            },
+            "detail": "Custom task for ROS2 to build package using colcon"
+        },
+
+        // Colcon Build ALL DEBUG
+        {
+            "label": "colcon_build_all_release",
+            "command": "cd ${config:workspace_dir} && colcon build --symlink-install && echo Build Complete.  Please check the Output for any errors.  A successfully compiled build will show 'Finished' even if there are warnings.  ; echo ;",
+            "type": "shell",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false,
+                "group": "build"
+            },
+            "detail": "Custom task for ROS2 to build package using colcon"
+        },
+
+        // Run in DEBUG
+        {
+            "label": "launch",
+            "command": "source ${config:ros2_dir}/setup.bash && cd ${config:workspace_dir} && source ${config:workspace_dir}/install/local_setup.bash && gnome-terminal -- bash -c '${config:commands_before_launch}; ${config:launch_command_debug}; exec bash'",
+            "type": "shell",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "detail": "Custom task to start ROS2, source workspace, and ros2 run or launch with GDB Server."
+        },
+
+        // Run in RELEASE
+        {
+            "label": "launch_release",
+            "command": "source ${config:ros2_dir}/setup.bash && cd ${config:workspace_dir} && source ${config:workspace_dir}/install/local_setup.bash && gnome-terminal -- bash -c '${config:commands_before_launch}; ${config:launch_command_release}; exec bash'",
+            "type": "shell",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "detail": "Custom task to start ROS2, source workspace, and ros2 run or launch."
+        },
+    ],
+    "version": "2.0.0"
+}

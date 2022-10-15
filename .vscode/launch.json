@@ -1,0 +1,107 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+
+    // The following configurations are custom-made by Lewis Kaye 2022 for development with ROS2 on Ubuntu.  
+    // Please configure your Settings.json file correctly.  
+    // Ensure you are opening your workspace folder, not your package folder, as a project (e.g. ros2_ws)
+
+    // If you need to modify the command VSCode uses to run the program (node executable) - modify the field "program"
+
+    "version": "0.2.0",
+    "configurations": [
+
+        // Colcon Build and Run in DEBUG Mode (C++)
+        {
+            "name": "ROS2 Build & Debug (C++ Debug)",
+                "request": "launch",
+                "type": "cppdbg",
+                "miDebuggerServerAddress": "localhost:3000",
+                "cwd": "/",
+                "program": "${config:workspace_dir}/install/${config:package_name}/lib/${config:package_name}/${config:node_name}",
+                "preLaunchTask": "build_and_debug"
+        },
+
+        // Colcon Build and Run in RELEASE Mode (C++)
+        {
+            "name": "ROS2 Build & Run (C++ Release)",
+                "request": "launch",
+                "type": "cppdbg",
+                "cwd": "/",
+                "program": "${config:workspace_dir}/install/${config:package_name}/lib/${config:package_name}/${config:node_name}",
+                "preLaunchTask": "build_and_run"
+        },
+        
+        // Colcon Build PACKAGE DEBUG (C++)
+        {
+            "name": "ROS2 Colcon Build Package (C++ Debug)",
+                "request": "launch",
+                "type": "cppdbg",
+                "cwd": "/",
+                "program": "", //Leave this blank, since build only and not running the program (it will throw an error that can be ignored)
+                "preLaunchTask": "colcon_build"
+        },
+
+        // Colcon Build PACKAGE RELEASE (C++)
+        {
+            "name": "ROS2 Colcon Build Package (C++ Release)",
+                "request": "launch",
+                "type": "cppdbg",
+                "cwd": "/",
+                "program": "", //Leave this blank, since build only and not running the program (it will throw an error that can be ignored)
+                "preLaunchTask": "colcon_build_release"
+        },
+
+        // Colcon Build ALL for DEBUG (C++)
+        {
+            "name": "ROS2 Colcon Build All (C++ Debug)",
+                "request": "launch",
+                "type": "cppdbg",
+                "cwd": "/",
+                "program": "", //Leave this blank, since build only and not running the program (it will throw an error that can be ignored)
+                "preLaunchTask": "colcon_build_all_debug"
+        },
+
+        // Colcon Build ALL for RELEASE (C++)
+        {
+            "name": "ROS2 Colcon Build All (C++ Release)",
+                "request": "launch",
+                "type": "cppdbg",
+                "cwd": "/",
+                "program": "", //Leave this blank, since build only and not running the program (it will throw an error that can be ignored)
+                "preLaunchTask": "colcon_build_all_release"
+        },
+
+        // Run in DEBUG (C++)
+        {
+            "name": "ROS2 Run (C++ Debug)",
+                "request": "launch",
+                "type": "cppdbg",
+                "miDebuggerServerAddress": "localhost:3000",
+                "cwd": "/",
+                "program": "${config:workspace_dir}/install/${config:package_name}/lib/${config:package_name}/${config:node_name}",
+                "preLaunchTask": "launch"
+        },
+
+        // Run in RELEASE (C++)
+        {
+            "name": "ROS2 Run (C++ Release)",
+                "request": "launch",
+                "type": "cppdbg",
+                "cwd": "/",
+                "program": "${config:workspace_dir}/install/${config:package_name}/lib/${config:package_name}/${config:node_name}",
+                "preLaunchTask": "launch_release"
+        },
+
+        // Run in Debug and attach to an already-running node (ie. no preLaunchTask) (Any Language)
+        {
+            "name": "ROS2 Debug (Attach to running node)",
+                "request": "launch",
+                "type": "cppdbg",
+                "miDebuggerServerAddress": "localhost:3000",
+                "cwd": "/",
+                "program": "${config:workspace_dir}/install/${config:package_name}/lib/${config:package_name}/${config:node_name}"
+        },
+    ]
+}
