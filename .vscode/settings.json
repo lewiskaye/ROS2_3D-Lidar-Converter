@@ -1,0 +1,111 @@
+{
+    // The following variables require setting for the custom ROS2 Launch and Task commands to run
+    // Ensure you are opening your workspace folder, not your package folder, as a project (e.g. ros2_ws)
+    // USE '${file}' for 'currently opened file'
+
+    // CHANGE THESE!!! 
+    "username": "napier", // Username of your current Ubuntu user account
+    "ros.distro": "humble", // The current version of ROS 2 you are running
+    "ros2_dir": "/opt/ros/${config:ros.distro}", // The path to your ROS 2 directory (only change if you need to)
+    "workspace_dir": "/home/${config:username}/Workspaces/ros2_ws", // The path to your current ROS Workspace Folder (eg. ros2_ws)
+    "package_name": "lidar_converter", // The name of the Package you want to develop/test/run in debug mode
+    "node_name": "converter_2d_to_3d", // The name of the Node you want to debug
+    "launch_file": "view_lidar_converter_launch.py", // The name of the launch file you want to run your soloution with (if applicable)
+    "commands_before_launch": ":", // If you have any other commands you need running before starting the build/run, enter them here!  (e.g. Dependencies such as the simulator).  Default = :
+    //"commands_before_launch": "ros2 launch slamtec_rplidar_ros2 view_rplidar_launch.py", // If you have any other commands you need running before starting the build/run, enter them here!  (e.g. Dependencies such as the simulator).  Default = :
+    "DCMAKE_BUILD_TYPE": "Debug", // THe build mode you want the colcon compiler to use - default: Debug
+
+    // These are the commands that are run after the build is completed - starting your node in debug mode
+    // Use either RUN or LAUNCH and modify depending on what you need.  
+    "run_command_debug": "ros2 run --prefix \"gdbserver localhost:3000\" ${config:package_name} ${config:node_name}",
+    "run_command_release": "ros2 run ${config:package_name} ${config:node_name}",
+    "program,": "${config:workspace_dir}/install/${config:package_name}/lib/${config:package_name}/${config:node_name}", // The command VSCode uses to run the program (node executable)
+    "launch_command_debug": "ros2 launch --launch-prefix \"gdbserver localhost:3000\" ${config:package_name} ${config:launch_file}",
+    "launch_command_release": "ros2 launch ${config:package_name} ${config:launch_file}",
+    
+    "cmake.sourceDirectory": "${config:workspace_dir}/src/${config:package_name}",
+    "python.autoComplete.extraPaths": [
+        "/opt/ros/${config:ros2.distro}/lib/python3.10/site-packages",
+        "/opt/ros/${config:ros2.distro}/local/lib/python3.10/dist-packages"
+    ],
+
+    "files.associations": {
+        "cctype": "cpp",
+        "clocale": "cpp",
+        "cmath": "cpp",
+        "csignal": "cpp",
+        "cstdarg": "cpp",
+        "cstddef": "cpp",
+        "cstdio": "cpp",
+        "cstdlib": "cpp",
+        "cstring": "cpp",
+        "ctime": "cpp",
+        "cwchar": "cpp",
+        "cwctype": "cpp",
+        "array": "cpp",
+        "atomic": "cpp",
+        "strstream": "cpp",
+        "bit": "cpp",
+        "*.tcc": "cpp",
+        "bitset": "cpp",
+        "chrono": "cpp",
+        "codecvt": "cpp",
+        "compare": "cpp",
+        "complex": "cpp",
+        "concepts": "cpp",
+        "condition_variable": "cpp",
+        "cstdint": "cpp",
+        "deque": "cpp",
+        "forward_list": "cpp",
+        "list": "cpp",
+        "map": "cpp",
+        "set": "cpp",
+        "string": "cpp",
+        "unordered_map": "cpp",
+        "unordered_set": "cpp",
+        "vector": "cpp",
+        "exception": "cpp",
+        "algorithm": "cpp",
+        "functional": "cpp",
+        "iterator": "cpp",
+        "memory": "cpp",
+        "memory_resource": "cpp",
+        "numeric": "cpp",
+        "optional": "cpp",
+        "random": "cpp",
+        "ratio": "cpp",
+        "string_view": "cpp",
+        "system_error": "cpp",
+        "tuple": "cpp",
+        "type_traits": "cpp",
+        "utility": "cpp",
+        "fstream": "cpp",
+        "future": "cpp",
+        "initializer_list": "cpp",
+        "iomanip": "cpp",
+        "iosfwd": "cpp",
+        "iostream": "cpp",
+        "istream": "cpp",
+        "limits": "cpp",
+        "mutex": "cpp",
+        "new": "cpp",
+        "numbers": "cpp",
+        "ostream": "cpp",
+        "semaphore": "cpp",
+        "shared_mutex": "cpp",
+        "sstream": "cpp",
+        "stdexcept": "cpp",
+        "stop_token": "cpp",
+        "streambuf": "cpp",
+        "thread": "cpp",
+        "cfenv": "cpp",
+        "cinttypes": "cpp",
+        "typeindex": "cpp",
+        "typeinfo": "cpp",
+        "variant": "cpp"
+    },
+    "python.analysis.extraPaths": [
+        "/opt/ros/${config:ros2.distro}/lib/python3.10/site-packages",
+        "/opt/ros/${config:ros2.distro}/local/lib/python3.10/dist-packages"
+    ]
+}

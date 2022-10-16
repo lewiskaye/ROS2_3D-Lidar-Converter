@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!-- Stepper Motor Link and Joint-->
+    <joint name="stepper_motor_joint" type="fixed">
+        <parent link="imu_angle_adjustment"/>
+        <child link="stepper_motor"/>
+        <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
+    </joint>
+
+    <link name="stepper_motor">
+        <visual>
+            <origin xyz="0 0 -0.0125"/>
+            <geometry>
+                <cylinder radius="0.03" length="0.025"/>
+            </geometry>
+            <material name="red"/>
+        </visual>
+        <collision>
+            <origin xyz="0 0 -0.0125"/>
+            <geometry>
+                <cylinder radius="0.03" length="0.025"/>
+            </geometry>
+        </collision>
+    </link>
+
+
+    <!-- Mounting Plate Link and Joint-->
+    <joint name="mounting_plate_arm_joint" type="revolute">
+        <parent link="stepper_motor"/>
+        <child link="mounting_plate_arm"/>
+        <origin xyz="0 0 0" rpy="-${pi/2} 0 0"/>
+        <axis xyz="0 1 0"/>
+        <limit effort="1000" lower="-${pi/2}" upper="${pi/2}" velocity="0.5"/>
+    </joint>
+
+    <link name="mounting_plate_arm">
+        <visual>
+            <origin xyz="0 -0.002 -0.0075"/>
+            <geometry>
+                <box size="0.025 0.004 0.035"/>
+            </geometry>
+            <material name="red"/>
+        </visual>
+        <collision>
+            <origin xyz="0 -0.002 -0.0075"/>
+            <geometry>
+                <box size="0.025 0.004 0.035"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <joint name="mounting_plate_base_joint" type="fixed">
+        <parent link="mounting_plate_arm"/>
+        <child link="mounting_plate_base"/>
+        <origin xyz="0 -0.039 -0.021"/>
+    </joint>
+
+    <link name="mounting_plate_base">
+        <visual>
+            <origin xyz="0 0 -0.002"/>
+            <geometry>
+                <box size="0.09 0.07 0.004"/>
+            </geometry>
+            <material name="red"/>
+        </visual>
+        <collision>
+            <origin xyz="0 0 -0.002"/>
+            <geometry>
+                <box size="0.09 0.07 0.004"/>
+            </geometry>
+        </collision>
+    </link>
+
+</robot>
