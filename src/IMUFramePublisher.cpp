@@ -46,36 +46,42 @@ void IMUFramePublisher::handle_imu(const std::shared_ptr<sensor_msgs::msg::Imu> 
     t.transform.translation.z = 0;
 
     // Set Rotation based on the IMU's magnetometer readings
+    //  ROS uses Quaternions for superior computational efficiency
+    //  Since the IMU Message already contains a Quaternion, it can be passed straight through to the transform
+    t.transform.rotation = msg->orientation; 
+    
+    // Unused code that may be useful later when integrating with a real IMU
     /* tf2::Quaternion q;
-    //q = msg; //Does this work if same type?  Do Directly?
     q.setRPY(msg->orientation.x, msg->orientation.y, msg->orientation.z); // TODO Modify this to access RPY from IMU
-    q.setW(msg->orientation.w); //TODO what is W?
-    t.transform.rotation.x = q.x();
-    t.transform.rotation.y = q.y();
-    t.transform.rotation.z = q.z();
-    t.transform.rotation.w = q.w(); */
-
-    t.transform.rotation = msg->orientation; //Does this work if same type?  Do Directly?
+    //q.setW(msg->orientation.w); //TODO what is W?
+    q.normalize();
+    t.transform.rotation.x = q.x(); */
 
     // Send the transformation
     tf_broadcaster_->sendTransform(t);
-    //tf_broadcaster_->sendTransform(msg);
-    
-    //Log to console
     RCLCPP_INFO(this->get_logger(), "IMU TF Published");  
-
-
 }
 
 void IMUFramePublisher::test_data()
 {
+    // Create a new IMU message
     sensor_msgs::msg::Imu message;
-    message.orientation.set__x(0);
-    message.orientation.set__y(float(rand())/float((RAND_MAX)) * 0.1);
-    message.orientation.set__z(0);
-    //message.orientation.set__w(float(rand())/float((RAND_MAX)) * 1);
+
+    // Create Quaternion to represent rotation/angle values
+    tf2::Quaternion q_tf;
+
+    // Generate fake X, Y, Z Vaues
+    q_tf.setRPY(0, float(rand())/float((RAND_MAX)) * 0.1, 0);
+
+    // Normalise Vector (takes w into account, not just x, y, z)
+    q_tf.normalize();
+
+    // Convert to Mesasge-type Quaternion, and add to IMU Message
+    message.orientation = tf2::toMsg(q_tf);
+    
+    
+    //Publish Test IMU Message
     RCLCPP_INFO(this->get_logger(), "IMU Test Data Published...");
     test_publisher_->publish(message);
-    //handle_imu(message);
 }
 

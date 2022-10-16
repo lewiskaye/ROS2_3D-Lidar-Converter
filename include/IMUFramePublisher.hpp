@@ -11,6 +11,7 @@
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
 #include "geometry_msgs/msg/transform_stamped.hpp"
+#include <tf2_geometry_msgs/tf2_geometry_msgs.hpp>
 #include "tf2/LinearMath/Quaternion.h"
 #include "tf2_ros/transform_broadcaster.h"
 //#include "turtlesim/msg/pose.hpp"
@@ -38,5 +39,7 @@ private:
 
   // Method to do the processing & broadcasting when called
   void handle_imu(const std::shared_ptr<sensor_msgs::msg::Imu> msg); //shared ptr
+
+  // Publishes test ROS2-IMU messages
   void test_data();
 };
