@@ -50,7 +50,7 @@
         // Colcon Build for DEBUG
         {
             "label": "colcon_build",
-            "command": "cd ${config:workspace_dir} && colcon build --packages-select ${config:package_name} --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=${config:DCMAKE_BUILD_TYPE} && echo Build Complete.  Please check the Output for any errors.  A successfully compiled build will show 'Finished' even if there are warnings.  ; echo ;",
+            "command": "cd ${config:workspace_dir} && source ${config:ros2_dir}/setup.bash && colcon build --packages-select ${config:package_name} --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=${config:DCMAKE_BUILD_TYPE} && echo Build Complete.  Please check the Output for any errors.  A successfully compiled build will show 'Finished' even if there are warnings.  ; echo ;",
             "type": "shell",
             "presentation": {
                 "echo": true,
@@ -67,7 +67,7 @@
         // Colcon Build for RELEASE
         {
             "label": "colcon_build_release",
-            "command": "cd ${config:workspace_dir} && colcon build --packages-select ${config:package_name} --symlink-install && echo Build Complete.  Please check the Output for any errors.  A successfully compiled build will show 'Finished' even if there are warnings.  ; echo ;",
+            "command": "cd ${config:workspace_dir} && source ${config:ros2_dir}/setup.bash && colcon build --packages-select ${config:package_name} --symlink-install && echo Build Complete.  Please check the Output for any errors.  A successfully compiled build will show 'Finished' even if there are warnings.  ; echo ;",
             "type": "shell",
             "presentation": {
                 "echo": true,
