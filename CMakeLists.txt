@@ -21,6 +21,7 @@ find_package(tf2 REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
+find_package(example_interfaces REQUIRED)
 #ament_auto_find_build_dependencies(REQUIRED sensor_msgs)
 
 # Converter Node
@@ -33,14 +34,19 @@ target_compile_features(converter_2d_to_3d PUBLIC c_std_99 cxx_std_17)  # Requir
 
 # IMU Node
 add_executable(imu src/IMU.cpp src/IMUFramePublisher.cpp)
-ament_target_dependencies(imu geometry_msgs tf2_geometry_msgs rclcpp tf2 tf2_ros std_msgs sensor_msgs laser_geometry)
+ament_target_dependencies(imu geometry_msgs tf2_geometry_msgs rclcpp tf2 tf2_ros std_msgs sensor_msgs)
 target_include_directories(imu PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 target_compile_features(imu PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
 
+# Stepper Motor Client Node
+add_executable(stepper_client src/stepper_client.cpp)
+ament_target_dependencies(stepper_client
+  rclcpp example_interfaces)
+
 # Install Nodes into ROS 2
-install(TARGETS converter_2d_to_3d imu
+install(TARGETS converter_2d_to_3d imu stepper_client
   DESTINATION lib/${PROJECT_NAME})
   
 install(DIRECTORY description launch rviz
