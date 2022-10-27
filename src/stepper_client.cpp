@@ -21,11 +21,11 @@ int main(int argc, char **argv)
 	//Handle cmd args
 	if (argc == 2 && std::atoi(argv[1]) != 0) {
 		angle = std::atoi(argv[1]);
-		RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Angle entered in Degrees: %ld deg", angle);
+		RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Angle entered in Degrees: %d deg", angle);
 		
 	} else if(argc == 3 && std::atoi(argv[2]) != 0) {
 		steps = std::atoi(argv[2]);
-		RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Step count entered: %ld steps", steps);
+		RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Step count entered: %d steps", steps);
 
 	} else {
 		RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "usage: ros2 run lidar_converter stepper_client <target angle in deg> (<no of steps to rotate>)");
