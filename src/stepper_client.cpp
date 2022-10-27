@@ -56,15 +56,27 @@ int main(int argc, char **argv)
 	// Send Servo Motor Rotation request to the service and wait for the result
 	auto result = client->async_send_request(request);
 
+	// Catch Errors (NOTE - this is perhaps a non-standard way of handling errors, since 0 is not success, it is a 0 degree angle rotated and therefore a failure)
+	// if (result.get()->sum == 0) {
+	// 	// an error occured whilst moving the motor (or with the angle(s) passed)
+	// 	RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Error - the Stepper Motor was not successfully moved");
+
+	// } else {
+	// 	// Success!
+	// 	RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Stepper Motor successfully moved: %d degrees", result.get()->sum);
+
+	// }
+
+	// OLD method for handling errors (as per ROS2 tutorials)
 	if (rclcpp::spin_until_future_complete(node, result) == rclcpp::FutureReturnCode::SUCCESS)
 	{
 		if (result.get()->sum == 0) {
-			// an error occured whilst moving the motor (or with the angle(s) passed)
-			RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Error - the Stepper Motor was not successfully moved");
+			// Success!
+			RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Stepper Motor successfully moved");
 
 		} else {
-			// Success!
-			RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Stepper Motor successfully moved: %ld degrees", result.get()->sum);
+			// an error occured whilst moving the motor (or with the angle(s) passed)			
+			RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Stepper Motor was NOT successfully moved");
 
 		}
 	} else {
