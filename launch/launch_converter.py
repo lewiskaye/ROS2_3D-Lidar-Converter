@@ -103,7 +103,7 @@ def generate_launch_description():
             name='converter_2d_to_3d',
             output='screen'),
 
-        #IMU Node
+        #IMU Frame/Angle Publisher Node
         Node(
             package='lidar_converter',
             executable='imu',
