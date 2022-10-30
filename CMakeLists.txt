@@ -28,21 +28,6 @@ find_package(custom_interfaces REQUIRED)
 #ament_auto_find_build_dependencies(REQUIRED sensor_msgs)
 
 
-# Stepper Motor Action Client
-add_library(stepper_client SHARED
-  src/StepperMotorClient.cpp)
-target_include_directories(stepper_client PRIVATE
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>)
-target_compile_definitions(stepper_client
-  PRIVATE "ACTION_TUTORIALS_CPP_BUILDING_DLL")
-ament_target_dependencies(stepper_client
-  "custom_interfaces"
-  "rclcpp"
-  "rclcpp_action"
-  "rclcpp_components")
-rclcpp_components_register_node(stepper_client PLUGIN "lidar_converter::StepperMotorClient" EXECUTABLE stepper_motor_client)
-
 # Converter Node
 add_executable(converter_2d_to_3d src/converter_2d_to_3d.cpp src/LidarSubscriber.cpp src/PointCloudPublisher.cpp)
 ament_target_dependencies(converter_2d_to_3d rclcpp std_msgs sensor_msgs laser_geometry)
@@ -59,17 +44,17 @@ target_include_directories(imu PUBLIC
   $<INSTALL_INTERFACE:include>)
 target_compile_features(imu PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
 
-# Stepper Motor Client Node
-#add_executable(stepper_client src/stepper_client.cpp)
-#ament_target_dependencies(stepper_client
-#  rclcpp example_interfaces)
+# Capture Scan Client Node
+add_executable(capture_scan src/capture_scan.cpp src/StepperMotorClient.cpp)
+ament_target_dependencies(capture_scan custom_interfaces rclcpp rclcpp_action rclcpp_components std_msgs)
+target_include_directories(capture_scan PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+target_compile_features(capture_scan PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
 
 # Install Nodes into ROS 2
-install(TARGETS converter_2d_to_3d imu stepper_client
-  DESTINATION lib/${PROJECT_NAME}
-  ARCHIVE DESTINATION lib
-  LIBRARY DESTINATION lib
-  RUNTIME DESTINATION bin)
+install(TARGETS converter_2d_to_3d imu capture_scan
+  DESTINATION lib/${PROJECT_NAME})
   
 install(DIRECTORY description launch rviz
   DESTINATION share/${PROJECT_NAME}

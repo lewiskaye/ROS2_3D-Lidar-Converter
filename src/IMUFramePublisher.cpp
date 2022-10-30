@@ -5,7 +5,7 @@
 
 
 // Constructer - run ONCE upon creation of the PointCloudPublisher object (one object per Lidar Subscriber node)
-IMUFramePublisher::IMUFramePublisher() : Node("imu") 
+IMUFramePublisher::IMUFramePublisher() : Node("imu_frame_publisher") 
 {
     // Declare and acquire 'child_frame' parameter
     child_frame_ = this->declare_parameter<std::string>("imu_frame", "base_link");
