@@ -8,7 +8,7 @@ int main(int argc, char ** argv)
   (void) argc;
   (void) argv;
 
-  printf("IMU Publisher Node\n");
+  printf("IMU Frame Publisher Node\n");
 
   //Impliment Lidar Subscriber
   rclcpp::init(argc, argv);

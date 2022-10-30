@@ -14,6 +14,8 @@ endif()
 # Format: find_package(<dependency> REQUIRED)
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(rclcpp_action REQUIRED)
+find_package(rclcpp_components REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(laser_geometry REQUIRED)
@@ -22,7 +24,24 @@ find_package(tf2_ros REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
 find_package(example_interfaces REQUIRED)
+find_package(custom_interfaces REQUIRED)
 #ament_auto_find_build_dependencies(REQUIRED sensor_msgs)
+
+
+# Stepper Motor Action Client
+add_library(stepper_client SHARED
+  src/StepperMotorClient.cpp)
+target_include_directories(stepper_client PRIVATE
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+target_compile_definitions(stepper_client
+  PRIVATE "ACTION_TUTORIALS_CPP_BUILDING_DLL")
+ament_target_dependencies(stepper_client
+  "custom_interfaces"
+  "rclcpp"
+  "rclcpp_action"
+  "rclcpp_components")
+rclcpp_components_register_node(stepper_client PLUGIN "lidar_converter::StepperMotorClient" EXECUTABLE stepper_motor_client)
 
 # Converter Node
 add_executable(converter_2d_to_3d src/converter_2d_to_3d.cpp src/LidarSubscriber.cpp src/PointCloudPublisher.cpp)
@@ -41,13 +60,16 @@ target_include_directories(imu PUBLIC
 target_compile_features(imu PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
 
 # Stepper Motor Client Node
-add_executable(stepper_client src/stepper_client.cpp)
-ament_target_dependencies(stepper_client
-  rclcpp example_interfaces)
+#add_executable(stepper_client src/stepper_client.cpp)
+#ament_target_dependencies(stepper_client
+#  rclcpp example_interfaces)
 
 # Install Nodes into ROS 2
 install(TARGETS converter_2d_to_3d imu stepper_client
-  DESTINATION lib/${PROJECT_NAME})
+  DESTINATION lib/${PROJECT_NAME}
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin)
   
 install(DIRECTORY description launch rviz
   DESTINATION share/${PROJECT_NAME}

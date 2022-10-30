@@ -1,3 +1,5 @@
+// TODO - Remove this File (not currently used)
+
 // C++ Imports
 #include <chrono>
 #include <cstdlib>
@@ -6,6 +8,9 @@
 // ROS2 Imports
 #include "rclcpp/rclcpp.hpp"
 #include "example_interfaces/srv/add_two_ints.hpp"
+#include "custom_interfaces/action/stepper_motor.hpp"
+#include "rclcpp_action/rclcpp_action.hpp"
+#include "rclcpp_components/register_node_macro.hpp"
 
 using namespace std::chrono_literals;
 
@@ -36,13 +41,13 @@ int main(int argc, char **argv)
 	std::shared_ptr<rclcpp::Node> node = rclcpp::Node::make_shared("stepper_client");
 
 	// Create Stepper Motor Client within Node
-	rclcpp::Client<example_interfaces::srv::AddTwoInts>::SharedPtr client = node->create_client<example_interfaces::srv::AddTwoInts>("move_motor");
+	rclcpp::Client<custom_interfaces::action::StepperMotor>::SharedPtr client = node->create_client<custom_interfaces::action::StepperMotor>("move_motor");
 
-	// Create a Request to move the Stepper Motor - as defined by the .srv interface used
+	// Create a Request to move the Stepper Motor - as defined by the action interface used
 	// TODO - change to customn .srv message
-	auto request = std::make_shared<example_interfaces::srv::AddTwoInts::Request>();
-	request->a = angle;
-	request->b = steps;
+	auto request = std::make_shared<custom_interfaces::action::StepperMotor::Goal>();
+	request->target_angle = angle;
+	request->speed = steps;
 
 	// Wait repeatidly for service nodes on the network (1s intervals)
 	while (!client->wait_for_service(1s)) {
@@ -56,15 +61,27 @@ int main(int argc, char **argv)
 	// Send Servo Motor Rotation request to the service and wait for the result
 	auto result = client->async_send_request(request);
 
+	// Catch Errors (NOTE - this is perhaps a non-standard way of handling errors, since 0 is not success, it is a 0 degree angle rotated and therefore a failure)
+	// if (result.get()->sum == 0) {
+	// 	// an error occured whilst moving the motor (or with the angle(s) passed)
+	// 	RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Error - the Stepper Motor was not successfully moved");
+
+	// } else {
+	// 	// Success!
+	// 	RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Stepper Motor successfully moved: %d degrees", result.get()->sum);
+
+	// }
+
+	// OLD method for handling errors (as per ROS2 tutorials)
 	if (rclcpp::spin_until_future_complete(node, result) == rclcpp::FutureReturnCode::SUCCESS)
 	{
 		if (result.get()->sum == 0) {
-			// an error occured whilst moving the motor (or with the angle(s) passed)
-			RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Error - the Stepper Motor was not successfully moved");
+			// Success!
+			RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Stepper Motor successfully moved");
 
 		} else {
-			// Success!
-			RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Stepper Motor successfully moved: %ld degrees", result.get()->sum);
+			// an error occured whilst moving the motor (or with the angle(s) passed)			
+			RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Stepper Motor was NOT successfully moved");
 
 		}
 	} else {

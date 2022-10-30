@@ -11,8 +11,8 @@ IMUFramePublisher::IMUFramePublisher() : Node("imu")
     child_frame_ = this->declare_parameter<std::string>("imu_frame", "base_link");
 
     // Time for testing putposes every 1s TODO - Disable for production
-    timer_ = this->create_wall_timer(10ms, std::bind(&IMUFramePublisher::test_data, this));
-    test_publisher_ = this->create_publisher<sensor_msgs::msg::Imu>("imu", 10);
+    //timer_ = this->create_wall_timer(10ms, std::bind(&IMUFramePublisher::test_data, this));
+    //test_publisher_ = this->create_publisher<sensor_msgs::msg::Imu>("imu/imu", 10);
 
     //Another method - subscribe to 3D PCD Topic and publish IMU readings only at that time - more efficient?
 
@@ -22,7 +22,7 @@ IMUFramePublisher::IMUFramePublisher() : Node("imu")
 
     // Subscribe to IMU data/msg/pose topic and call handle_imu callback function on each message
     imu_subscription_ = this->create_subscription<sensor_msgs::msg::Imu>(
-        "imu", 
+        "imu/imu", 
         rclcpp::QoS(rclcpp::SensorDataQoS()) /*QoS for sensors (best effort etc)*/,
         std::bind(&IMUFramePublisher::handle_imu, this, std::placeholders::_1));
 

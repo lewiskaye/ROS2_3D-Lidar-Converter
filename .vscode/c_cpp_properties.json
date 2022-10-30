@@ -18,6 +18,8 @@
                 "${config:workspace_dir}/src/rplidar_ros2/include",
                 "${config:workspace_dir}/src/slamtec_rplidar_ros2/sdk/include",
                 "${config:workspace_dir}/src/slamtec_rplidar_ros2/sdk/src",
+                "${config:workspace_dir}/src/custom_interfaces/include/**",
+                "${config:workspace_dir}/install/custom_interfaces/include/**",
                 "/opt/ros/humble/include/sensor_msgs",
                 "/opt/ros/humble/include/example_interfaces"
             ],
