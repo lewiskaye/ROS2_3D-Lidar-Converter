@@ -28,24 +28,6 @@ find_package(custom_interfaces REQUIRED)
 #ament_auto_find_build_dependencies(REQUIRED sensor_msgs)
 
 
-# Stepper Motor Action Client
-#add_library(stepper_client SHARED
-#  src/StepperMotorClient.cpp)
-#target_include_directories(stepper_client PRIVATE
-#  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-#  $<INSTALL_INTERFACE:include>)
-#ament_target_dependencies(stepper_client
-#  "custom_interfaces"
-#  "rclcpp"
-#  "rclcpp_action"
-#  "rclcpp_components")
-#rclcpp_components_register_node(stepper_client PLUGIN "lidar_converter::StepperMotorClient" EXECUTABLE stepper_motor_client)
-#install(TARGETS
-#  stepper_client
-#  ARCHIVE DESTINATION lib
-#  LIBRARY DESTINATION lib
-#  RUNTIME DESTINATION bin)
-
 # Converter Node
 add_executable(converter_2d_to_3d src/converter_2d_to_3d.cpp src/LidarSubscriber.cpp src/PointCloudPublisher.cpp)
 ament_target_dependencies(converter_2d_to_3d rclcpp std_msgs sensor_msgs laser_geometry)
