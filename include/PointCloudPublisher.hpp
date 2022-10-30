@@ -19,7 +19,7 @@ class PointCloudPublisher : public rclcpp::Node
 public:
   PointCloudPublisher();
   //virtual ~PointCloudPublisher();
-  void publish_pointcloud(sensor_msgs::msg::PointCloud2 &pc); //Do we need the &ref symbol??
+  void publish_pointcloud(sensor_msgs::msg::PointCloud2 &pc);
 
 private:
   rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr publisher;
