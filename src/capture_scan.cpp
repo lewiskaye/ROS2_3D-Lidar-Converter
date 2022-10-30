@@ -1,5 +1,7 @@
-// This file/node is responsible for capturing a full 3D Scan by
-// ON LOAD - Leveling the platdown to Horizontal using IMU and Stepper Motor small angles
+// This file is the entry point for the Full 3D Scan-Capture Service
+// Currently - This file handles all the logic for a scan capture, however it may be transfered into a Service or an Action Client in the future.  
+
+// ON LOAD - Levels the platdown to Horizontal using IMU and Stepper Motor by calling LEVEL in the Stepper Node (OLD- small angles)
 // CONTINOUSLY - Showing Output in RViz
 // PSEUDOCODE:
 // - Rotating the Stepper Motor upwards to vertically straight up (according to IMU Readings OR just 90 deg if levelled out already)
@@ -10,27 +12,31 @@
 // - Exporting
 // - Return to Horizontal position
 
-// C++ Imports
-#include <chrono>
-#include <cstdlib>
-#include <memory>
+#include "../include/capture_scan.hpp"
+using std::placeholders::_1;
 
-// ROS2 Imports
-#include "rclcpp/rclcpp.hpp"
-#include "example_interfaces/srv/add_two_ints.hpp"
-
-// Custom Imports
-#include "../include/StepperMotorClient.hpp"
-
-using namespace std::chrono_literals;
+//using namespace std::chrono_literals;
+//using namespace lidar_converter;
 
 
 int main(int argc, char **argv)
 {
+	(void) argc;
+	(void) argv;
+
 	rclcpp::init(argc, argv);
+	printf("Starting Capture Node\n");
 
-	//auto stepper_motor_client = StepperMotorClient();
+	//Spin Lidar Subscriber Node (does the )
+	rclcpp::spin(std::make_shared<StepperMotorClient>());
 
+	// Point Cloud Publisher is implimented within the subscriber (no extra call needed)
+
+	// Spin the Capture Scan??
+
+
+
+	//Exit Node
 	rclcpp::shutdown();
 	return 0;
 }

@@ -7,14 +7,18 @@ int main(int argc, char ** argv)
 {
   (void) argc;
   (void) argv;
-
+  
+  rclcpp::init(argc, argv);
   printf("Starting 2D -> 3D Converter Node\n");
 
-  //Impliment Lidar Subscriber
-  rclcpp::init(argc, argv);
+  //Spin Lidar Subscriber Node (does the )
   rclcpp::spin(std::make_shared<LidarSubscriber>());
 
   // Point Cloud Publisher is implimented within the subscriber (no extra call needed)
+
+  // Spin the Capture Scan??
+
+
 
   //Exit Node
   rclcpp::shutdown();

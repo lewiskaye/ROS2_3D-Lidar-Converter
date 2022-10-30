@@ -96,14 +96,14 @@ def generate_launch_description():
                          'angle_compensate': angle_compensate}],
             output='screen'),
         
-        #LiDAR Converter Node
+        # LiDAR Converter Node
         Node(
             package='lidar_converter',
             executable='converter_2d_to_3d',
             name='converter_2d_to_3d',
             output='screen'),
 
-        #IMU Node
+        # IMU Node
         Node(
             package='lidar_converter',
             executable='imu',
