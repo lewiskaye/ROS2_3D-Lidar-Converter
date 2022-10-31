@@ -46,7 +46,7 @@ target_compile_features(imu PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
 
 # Capture Scan Client Node
 add_executable(capture_scan src/capture_scan.cpp src/StepperMotorClient.cpp)
-ament_target_dependencies(capture_scan custom_interfaces rclcpp rclcpp_action rclcpp_components std_msgs sensor_msgs)
+ament_target_dependencies(capture_scan custom_interfaces rclcpp rclcpp_action rclcpp_components std_msgs sensor_msgs tf2 tf2_geometry_msgs)
 target_include_directories(capture_scan PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)

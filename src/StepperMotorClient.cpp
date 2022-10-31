@@ -11,6 +11,8 @@ StepperMotorClient::StepperMotorClient() : Node("stepper_client")
 
     // Create a subscription to the '/scan' topic
     pc_subscription = this->create_subscription<sensor_msgs::msg::PointCloud2>("scan3d", rclcpp::QoS(rclcpp::SensorDataQoS()) /*QoS for sensors (best effort etc)*/, std::bind(&StepperMotorClient::scan_callback, this, _1));
+    // Create an IMU Subscription to track the angle on the 'imu/imu' topic
+    imu_subscription = this->create_subscription<sensor_msgs::msg::Imu>("imu/imu", rclcpp::QoS(rclcpp::SensorDataQoS()) /*QoS for sensors (best effort etc)*/, std::bind(&StepperMotorClient::imu_callback, this, _1));
 }
 
 
@@ -18,24 +20,39 @@ StepperMotorClient::StepperMotorClient() : Node("stepper_client")
 // Params: none
 void StepperMotorClient::capture_scan()
 {
-    // Check platform has been levelled
-    if (levelled != true) {
-        // Sleep for 1 second in the hope that the platform becomes levelled
-        RCLCPP_ERROR(this->get_logger(), "Platform has not been levelled yet...");
-        //sleep(1);
-        rclcpp::sleep_for(std::chrono::milliseconds(1000));
-        //rclcpp::shutdown();
-    }
+    // Dissable Timer so this only runs once
+    this->timer_->cancel();
+    RCLCPP_INFO(this->get_logger(), "Starting Scan Capture!");
 
-    RCLCPP_INFO(this->get_logger(), "Platform has been levelled");
+    // Send Command for Motor to be Levelled
+    RCLCPP_INFO(this->get_logger(), "Levelling the Platform...");
+    level_motor("imu/imu"); //TODO IMU Topic not currently used
+
+    // Sleep whilst platform is levelled
+    rclcpp::sleep_for(std::chrono::milliseconds(4000));
+
+    // TODO - change to feedback or angle-based approach
+    // Check platform has been levelled
+    // int tolerance = 1;
+    // while (this->levelled != true || -tolerance <= this->latest_pitch <= tolerance) {
+    //     // Sleep for 1 second in the hope that the platform becomes levelled
+    //     RCLCPP_ERROR(this->get_logger(), "Platform has not been levelled yet...");
+    //     //std::cout << this->latest_pitch << std::endl;
+    //     //sleep(1);
+    //     rclcpp::sleep_for(std::chrono::milliseconds(1000));
+    // }
+
+    RCLCPP_INFO(this->get_logger(), "Assuming Platform has been levelled - continuing...");
 
     // Rotate the Stepper Motor upwards to vertically straight up (TODO - according to IMU Readings OR just 90 deg if levelled out already)
     float speed_fast = 10; //rps
     float speed_slow = 10; //rps //TODO const?
     RCLCPP_INFO(this->get_logger(), "[SCAN] Panning Motor Up to Vertical");
     move_motor(-90, speed_fast);
-    // TODO wait?
-    //rclcpp::sleep_for(std::chrono::milliseconds(2000));
+    
+    // TODO wait? OR wait for action?
+    // TODO - switch back to a service
+    rclcpp::sleep_for(std::chrono::milliseconds(4000));
 
     // Start the Scan
     RCLCPP_INFO(this->get_logger(), "[SCAN] Attempting to start scanning...");
@@ -66,7 +83,7 @@ void StepperMotorClient::scan_callback(const sensor_msgs::msg::PointCloud2 & pc_
 {
     // Check if node in scanning state
     if (this->scanning == true) {
-        RCLCPP_INFO(this->get_logger(), "[SCAN] Scan Successfully Starting...");
+        RCLCPP_INFO(this->get_logger(), "[SCAN] Point Cloud Scan Successfully Starting...");
     }
 }
 
@@ -105,8 +122,8 @@ void StepperMotorClient::move_motor(float target_angle, float speed)
 
     // Set Target Angle (deg) and Desired Speed (rps)
     auto goal_msg = StepperMotor::Goal();
-    goal_msg.target_angle = 10;//target_angle;
-    goal_msg.speed = 10;//speed;
+    goal_msg.target_angle = target_angle;
+    goal_msg.speed = speed;
 
     // Send Message (goal) to Stepper Motor Action Server
     RCLCPP_INFO(this->get_logger(), "Sending goal to stepper motor");
@@ -166,6 +183,8 @@ void StepperMotorClient::level_callback(const GoalHandleLevel::WrappedResult & l
     switch (level_result.code) {
         case rclcpp_action::ResultCode::SUCCEEDED:
         RCLCPP_INFO(this->get_logger(), "Levelling Operation Completed Successfully");
+        // Set Self Variable
+        this->levelled = true;
         break;
         case rclcpp_action::ResultCode::ABORTED:
         RCLCPP_ERROR(this->get_logger(), "Levelling Operation was aborted");
@@ -180,6 +199,24 @@ void StepperMotorClient::level_callback(const GoalHandleLevel::WrappedResult & l
 
     // Set Self Variable
     this->levelled = true;
+}
+
+
+void StepperMotorClient::imu_callback(const sensor_msgs::msg::Imu & imu_msg)
+{
+    // Get R, P, Y from Quaternion
+    tf2::Quaternion q(
+        imu_msg.orientation.x,
+        imu_msg.orientation.y,
+        imu_msg.orientation.z,
+        imu_msg.orientation.w);
+    //tf2::fromMsg(imu_msg.orientation, q);
+    tf2::Matrix3x3 m(q);
+    double roll, pitch, yaw;
+    m.getRPY(roll, pitch, yaw);
+
+    // Store in object
+    this->latest_pitch = (float) pitch;
 }
 
 //RCLCPP_COMPONENTS_REGISTER_NODE(StepperMotorClient::StepperMotorClient)

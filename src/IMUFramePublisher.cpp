@@ -53,7 +53,7 @@ void IMUFramePublisher::handle_imu(const std::shared_ptr<sensor_msgs::msg::Imu> 
     // Unused code that may be useful later when integrating with a real IMU
     /* tf2::Quaternion q;
     q.setRPY(msg->orientation.x, msg->orientation.y, msg->orientation.z); // TODO Modify this to access RPY from IMU
-    //q.setW(msg->orientation.w); //TODO what is W?
+    //q.setW(msg->orientation.w);
     q.normalize();
     t.transform.rotation.x = q.x(); */
 
