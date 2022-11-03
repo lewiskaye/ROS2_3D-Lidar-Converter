@@ -12,6 +12,7 @@
 #include <sensor_msgs/msg/point_cloud2.hpp>
 #include <laser_geometry/laser_geometry.hpp>
 
+using namespace std::placeholders;
 using std::placeholders::_1;
 
 class PointCloudPublisher : public rclcpp::Node

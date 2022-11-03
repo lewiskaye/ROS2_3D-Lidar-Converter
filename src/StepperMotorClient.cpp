@@ -1,12 +1,78 @@
 #include "../include/StepperMotorClient.hpp"
+using std::placeholders::_1;
 
+// Constructor
 StepperMotorClient::StepperMotorClient() : Node("stepper_client")
 {
+    // Create Clients and Subscriptions
     this->move_motor_client_ptr_ = rclcpp_action::create_client<StepperMotor>(this, "move_motor");
-    this->level_motor_client_ptr_ = rclcpp_action::create_client<StepperMotor>(this, "level_motor");
+    this->level_motor_client_ptr_ = rclcpp_action::create_client<Level>(this, "level_motor");
+    this->level_client = rclcpp_action::create_client<Level>(this, "level_motor");
+    // Subscribe to the '/scan3d' topic to capture scan data
+    pc_subscription = this->create_subscription<sensor_msgs::msg::PointCloud2>("scan3d", rclcpp::QoS(rclcpp::SensorDataQoS()) /*QoS for sensors (best effort etc)*/, std::bind(&StepperMotorClient::scan_callback, this, _1));
+    // Create an IMU Subscription to track the angle on the 'imu/imu' topic (Not currently in use)
+    //imu_subscription = this->create_subscription<sensor_msgs::msg::Imu>("imu/imu", rclcpp::QoS(rclcpp::SensorDataQoS()) /*QoS for sensors (best effort etc)*/, std::bind(&StepperMotorClient::imu_callback, this, _1));
+    // Timer to automatically capture scan after 0.2s
+    this->timer_ = this->create_wall_timer(std::chrono::milliseconds(200), std::bind(&StepperMotorClient::capture_scan, this));
+}
 
-    // Timer to automatically send message (for usage as a standalone node)
-    this->timer_ = this->create_wall_timer(std::chrono::milliseconds(500), std::bind(&StepperMotorClient::send_goal, this));
+
+// Takes a full scan using LiDAR, IMU, Stepper Motor
+// Params: none
+void StepperMotorClient::capture_scan()
+{
+    // Dissable Timer so this only runs once
+    this->timer_->cancel();
+    RCLCPP_INFO(this->get_logger(), "Starting Scan Capture!");
+
+    // Send Command for Motor to be Levelled & Wait
+    RCLCPP_INFO(this->get_logger(), "Levelling the Platform...");
+    level_motor("imu/imu"); //TODO IMU Topic not currently used
+    rclcpp::sleep_for(std::chrono::milliseconds(4000));
+
+    // Rotate the Stepper Motor upwards to vertically straight up (TODO - according to IMU Readings OR just 90 deg if levelled out already)
+    float speed_fast = 0.5; //rps
+    float speed_slow = 0.1; //rps
+    RCLCPP_INFO(this->get_logger(), "[SCAN] Panning Motor Up to Vertical");
+    move_motor((float)-90, speed_fast);
+    rclcpp::sleep_for(std::chrono::milliseconds(5000));
+
+    // Start the Scan
+    RCLCPP_INFO(this->get_logger(), "[SCAN] Attempting to start scanning...");
+    this->scanning = true;
+    // Now this variable is set to true, the Scan Callback Function will process each scan...
+
+    // Rotate gradually downwards
+    RCLCPP_INFO(this->get_logger(), "[SCAN] Panning Motor Down");
+    move_motor((float)180, speed_slow);
+    rclcpp::sleep_for(std::chrono::milliseconds(10000));
+
+    // Stop Scan
+    RCLCPP_INFO(this->get_logger(), "[SCAN] Stopping scan...");
+    this->scanning = false;
+
+    // Return to Horizontal position
+    RCLCPP_INFO(this->get_logger(), "[SCAN] Panning Motor to Level");
+    move_motor((float)-90, speed_fast);
+
+    // Export PCL
+    // TODO
+
+    // Shut down Node
+    rclcpp::shutdown();
+}
+
+
+// Called every time the node recieves a PointCloud2 Scan Message on the topic scan3d
+void StepperMotorClient::scan_callback(const sensor_msgs::msg::PointCloud2 & pc_msg)
+{
+    // Check if node in scanning state
+    if (this->scanning == true) {
+        RCLCPP_INFO(this->get_logger(), "[SCAN] Point Cloud Scan Successfully Starting...");
+    }
+
+    // Concatenate scans together here
+    //TODO
 }
 
 // Send a command to level the Servo motor using the IMU
@@ -21,11 +87,21 @@ void StepperMotorClient::level_motor(std::string imu_topic)
         rclcpp::shutdown();
     }
 
+    // Create a Goal to send to the Stepper Driver
+    auto goal_msg = Level::Goal();
+    goal_msg.imu_topic = "imu/imu";
+
+    // Send Goal to Stepper Driver
+    RCLCPP_INFO(this->get_logger(), "Sending 'LEVEL' command to stepper motor action client");
+    auto level_goal_options = rclcpp_action::Client<Level>::SendGoalOptions();
+    level_goal_options.result_callback = std::bind(&StepperMotorClient::level_callback, this, _1);
+    this->level_motor_client_ptr_->async_send_goal(goal_msg, level_goal_options);
+    //auto response = level_client
 }
 
 // Send a command to move the Servo motor
 // Params: float Target Angle (deg) and float Speed (rps)
-void StepperMotorClient::send_goal()//float target_angle, float speed)
+void StepperMotorClient::move_motor(float target_angle, float speed)
 {
     using namespace std::placeholders;
 
@@ -37,8 +113,8 @@ void StepperMotorClient::send_goal()//float target_angle, float speed)
 
     // Set Target Angle (deg) and Desired Speed (rps)
     auto goal_msg = StepperMotor::Goal();
-    goal_msg.target_angle = 10;//target_angle;
-    goal_msg.speed = 10;//speed;
+    goal_msg.target_angle = target_angle;
+    goal_msg.speed = speed;
 
     // Send Message (goal) to Stepper Motor Action Server
     RCLCPP_INFO(this->get_logger(), "Sending goal to stepper motor");
@@ -49,7 +125,7 @@ void StepperMotorClient::send_goal()//float target_angle, float speed)
     this->move_motor_client_ptr_->async_send_goal(goal_msg, send_goal_options);
 }
 
-
+// Logs information about the goal status
 void StepperMotorClient::goal_response_callback(const GoalHandleStepperMotor::SharedPtr & goal_handle)
 {
     if (!goal_handle) {
@@ -89,8 +165,31 @@ void StepperMotorClient::result_callback(const GoalHandleStepperMotor::WrappedRe
     // std::stringstream ss;
     // ss << "Result received: " << result.result->succeeded;
     // RCLCPP_INFO(this->get_logger(), ss.str().c_str());
-    rclcpp::shutdown();
+    //rclcpp::shutdown();
 }
 
+// Handle when the Action Server sends back a result
+void StepperMotorClient::level_callback(const GoalHandleLevel::WrappedResult & level_result)
+{
+    switch (level_result.code) {
+        case rclcpp_action::ResultCode::SUCCEEDED:
+        RCLCPP_INFO(this->get_logger(), "Levelling Operation Completed Successfully");
+        // Set Self Variable
+        this->levelled = true;
+        break;
+        case rclcpp_action::ResultCode::ABORTED:
+        RCLCPP_ERROR(this->get_logger(), "Levelling Operation was aborted");
+        return;
+        case rclcpp_action::ResultCode::CANCELED:
+        RCLCPP_ERROR(this->get_logger(), "Levelling Operation was canceled");
+        return;
+        default:
+        RCLCPP_ERROR(this->get_logger(), "Unknown result code");
+        return;
+    }
+
+    // Set Self Variable
+    this->levelled = true;
+}
 
 //RCLCPP_COMPONENTS_REGISTER_NODE(StepperMotorClient::StepperMotorClient)
