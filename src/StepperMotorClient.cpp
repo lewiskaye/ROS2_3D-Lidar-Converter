@@ -1,18 +1,19 @@
 #include "../include/StepperMotorClient.hpp"
 using std::placeholders::_1;
 
+// Constructor
 StepperMotorClient::StepperMotorClient() : Node("stepper_client")
 {
+    // Create Clients and Subscriptions
     this->move_motor_client_ptr_ = rclcpp_action::create_client<StepperMotor>(this, "move_motor");
     this->level_motor_client_ptr_ = rclcpp_action::create_client<Level>(this, "level_motor");
-
-    // Timer to automatically capture scan after 0.5s
-    this->timer_ = this->create_wall_timer(std::chrono::milliseconds(500), std::bind(&StepperMotorClient::capture_scan, this));
-
-    // Create a subscription to the '/scan' topic
+    this->level_client = rclcpp_action::create_client<Level>(this, "level_motor");
+    // Subscribe to the '/scan3d' topic to capture scan data
     pc_subscription = this->create_subscription<sensor_msgs::msg::PointCloud2>("scan3d", rclcpp::QoS(rclcpp::SensorDataQoS()) /*QoS for sensors (best effort etc)*/, std::bind(&StepperMotorClient::scan_callback, this, _1));
-    // Create an IMU Subscription to track the angle on the 'imu/imu' topic
-    imu_subscription = this->create_subscription<sensor_msgs::msg::Imu>("imu/imu", rclcpp::QoS(rclcpp::SensorDataQoS()) /*QoS for sensors (best effort etc)*/, std::bind(&StepperMotorClient::imu_callback, this, _1));
+    // Create an IMU Subscription to track the angle on the 'imu/imu' topic (Not currently in use)
+    //imu_subscription = this->create_subscription<sensor_msgs::msg::Imu>("imu/imu", rclcpp::QoS(rclcpp::SensorDataQoS()) /*QoS for sensors (best effort etc)*/, std::bind(&StepperMotorClient::imu_callback, this, _1));
+    // Timer to automatically capture scan after 0.2s
+    this->timer_ = this->create_wall_timer(std::chrono::milliseconds(200), std::bind(&StepperMotorClient::capture_scan, this));
 }
 
 
@@ -24,44 +25,27 @@ void StepperMotorClient::capture_scan()
     this->timer_->cancel();
     RCLCPP_INFO(this->get_logger(), "Starting Scan Capture!");
 
-    // Send Command for Motor to be Levelled
+    // Send Command for Motor to be Levelled & Wait
     RCLCPP_INFO(this->get_logger(), "Levelling the Platform...");
     level_motor("imu/imu"); //TODO IMU Topic not currently used
-
-    // Sleep whilst platform is levelled
     rclcpp::sleep_for(std::chrono::milliseconds(4000));
-
-    // TODO - change to feedback or angle-based approach
-    // Check platform has been levelled
-    // int tolerance = 1;
-    // while (this->levelled != true || -tolerance <= this->latest_pitch <= tolerance) {
-    //     // Sleep for 1 second in the hope that the platform becomes levelled
-    //     RCLCPP_ERROR(this->get_logger(), "Platform has not been levelled yet...");
-    //     //std::cout << this->latest_pitch << std::endl;
-    //     //sleep(1);
-    //     rclcpp::sleep_for(std::chrono::milliseconds(1000));
-    // }
-
-    RCLCPP_INFO(this->get_logger(), "Assuming Platform has been levelled - continuing...");
 
     // Rotate the Stepper Motor upwards to vertically straight up (TODO - according to IMU Readings OR just 90 deg if levelled out already)
-    float speed_fast = 10; //rps
-    float speed_slow = 10; //rps //TODO const?
+    float speed_fast = 0.5; //rps
+    float speed_slow = 0.1; //rps
     RCLCPP_INFO(this->get_logger(), "[SCAN] Panning Motor Up to Vertical");
-    move_motor(-90, speed_fast);
-    
-    // TODO wait? OR wait for action?
-    // TODO - switch back to a service
-    rclcpp::sleep_for(std::chrono::milliseconds(4000));
+    move_motor((float)-90, speed_fast);
+    rclcpp::sleep_for(std::chrono::milliseconds(5000));
 
     // Start the Scan
     RCLCPP_INFO(this->get_logger(), "[SCAN] Attempting to start scanning...");
     this->scanning = true;
     // Now this variable is set to true, the Scan Callback Function will process each scan...
 
-    // Rotate gradually downwards (take scan method called in stepper?)
+    // Rotate gradually downwards
     RCLCPP_INFO(this->get_logger(), "[SCAN] Panning Motor Down");
-    move_motor(180, speed_slow);
+    move_motor((float)180, speed_slow);
+    rclcpp::sleep_for(std::chrono::milliseconds(10000));
 
     // Stop Scan
     RCLCPP_INFO(this->get_logger(), "[SCAN] Stopping scan...");
@@ -69,12 +53,13 @@ void StepperMotorClient::capture_scan()
 
     // Return to Horizontal position
     RCLCPP_INFO(this->get_logger(), "[SCAN] Panning Motor to Level");
-    move_motor(90, speed_fast);
+    move_motor((float)-90, speed_fast);
 
     // Export PCL
+    // TODO
 
-
-    
+    // Shut down Node
+    rclcpp::shutdown();
 }
 
 
@@ -85,6 +70,9 @@ void StepperMotorClient::scan_callback(const sensor_msgs::msg::PointCloud2 & pc_
     if (this->scanning == true) {
         RCLCPP_INFO(this->get_logger(), "[SCAN] Point Cloud Scan Successfully Starting...");
     }
+
+    // Concatenate scans together here
+    //TODO
 }
 
 // Send a command to level the Servo motor using the IMU
@@ -99,13 +87,16 @@ void StepperMotorClient::level_motor(std::string imu_topic)
         rclcpp::shutdown();
     }
 
+    // Create a Goal to send to the Stepper Driver
     auto goal_msg = Level::Goal();
     goal_msg.imu_topic = "imu/imu";
 
+    // Send Goal to Stepper Driver
     RCLCPP_INFO(this->get_logger(), "Sending 'LEVEL' command to stepper motor action client");
     auto level_goal_options = rclcpp_action::Client<Level>::SendGoalOptions();
     level_goal_options.result_callback = std::bind(&StepperMotorClient::level_callback, this, _1);
     this->level_motor_client_ptr_->async_send_goal(goal_msg, level_goal_options);
+    //auto response = level_client
 }
 
 // Send a command to move the Servo motor
@@ -134,7 +125,7 @@ void StepperMotorClient::move_motor(float target_angle, float speed)
     this->move_motor_client_ptr_->async_send_goal(goal_msg, send_goal_options);
 }
 
-
+// Logs information about the goal status
 void StepperMotorClient::goal_response_callback(const GoalHandleStepperMotor::SharedPtr & goal_handle)
 {
     if (!goal_handle) {
@@ -199,24 +190,6 @@ void StepperMotorClient::level_callback(const GoalHandleLevel::WrappedResult & l
 
     // Set Self Variable
     this->levelled = true;
-}
-
-
-void StepperMotorClient::imu_callback(const sensor_msgs::msg::Imu & imu_msg)
-{
-    // Get R, P, Y from Quaternion
-    tf2::Quaternion q(
-        imu_msg.orientation.x,
-        imu_msg.orientation.y,
-        imu_msg.orientation.z,
-        imu_msg.orientation.w);
-    //tf2::fromMsg(imu_msg.orientation, q);
-    tf2::Matrix3x3 m(q);
-    double roll, pitch, yaw;
-    m.getRPY(roll, pitch, yaw);
-
-    // Store in object
-    this->latest_pitch = (float) pitch;
 }
 
 //RCLCPP_COMPONENTS_REGISTER_NODE(StepperMotorClient::StepperMotorClient)

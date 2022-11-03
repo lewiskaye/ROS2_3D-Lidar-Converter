@@ -35,6 +35,7 @@ class StepperMotorClient : public rclcpp::Node
     private:
         rclcpp_action::Client<StepperMotor>::SharedPtr move_motor_client_ptr_;
         rclcpp_action::Client<Level>::SharedPtr level_motor_client_ptr_;
+        rclcpp_action::Client<Level>::SharedPtr level_client;
         rclcpp::TimerBase::SharedPtr timer_;
         rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr pc_subscription;
         rclcpp::Subscription<sensor_msgs::msg::Imu>::SharedPtr imu_subscription;

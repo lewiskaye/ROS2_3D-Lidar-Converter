@@ -48,7 +48,14 @@ void IMUFramePublisher::handle_imu(const std::shared_ptr<sensor_msgs::msg::Imu> 
     // Set Rotation based on the IMU's magnetometer readings
     //  ROS uses Quaternions for superior computational efficiency
     //  Since the IMU Message already contains a Quaternion, it can be passed straight through to the transform
+    // t.transform.rotation.x = msg->orientation.x;
+    // t.transform.rotation.y = msg->orientation.y;
+    // t.transform.rotation.z = msg->orientation.z;
+    // t.transform.rotation.z = (msg->orientation.w);
+    
+    
     t.transform.rotation = msg->orientation; 
+    //t.transform.rotation
     
     // Unused code that may be useful later when integrating with a real IMU
     /* tf2::Quaternion q;

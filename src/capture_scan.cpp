@@ -27,18 +27,9 @@ int main(int argc, char **argv)
 	rclcpp::init(argc, argv);
 	printf("Starting Capture Node\n");
 
-	//Spin Stepper Motor Node
+	//Spin Stepper Motor Node (responsible for all logic)
 	auto stepper_client = std::make_shared<StepperMotorClient>();
 	rclcpp::spin(stepper_client);
-
-	std::cout << "test" << std::endl;
-	//stepper_client.send_goal();
-
-	// Point Cloud Publisher is implimented within the subscriber (no extra call needed)
-
-	// Spin the Capture Scan??
-
-
 
 	//Exit Node
 	rclcpp::shutdown();
