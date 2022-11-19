@@ -20,9 +20,24 @@ void PointCloudPublisher::publish_pointcloud(sensor_msgs::msg::PointCloud2 &pc)
     publisher->publish(pc);
     
     //Log to console
-    RCLCPP_INFO(this->get_logger(), "Point CLoud Published");  
+    RCLCPP_INFO(this->get_logger(), "Point Cloud Published");  
+    //std::cout << pc.data << std::endl;
+    
+    pcl::PointCloud<pcl::PointXYZI> pcl_cloud;
+    pcl::fromROSMsg(pc, pcl_cloud);
+    
+    std::cout << pcl_cloud.points[0].x << pcl_cloud.points[0].y << pcl_cloud.points[0].z << std::endl;
+
+    // for (auto point = pcl_cloud.points.begin(); point != pcl_cloud.points.end(); ++point) {
+    //     std::cout << point->x << std::endl;
+    // }
 
 
+    // OLD PCL CODE
+    // pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud = boost::make_shared<pcl::PointCloud<pcl::PointXYZRGB>>(); // PCL still uses boost::shared_ptr internally
+    // pcl::fromROSMsg(*pc, *cloud); // This will convert the message into a pcl::PointCloud
+
+    
 }
 
 

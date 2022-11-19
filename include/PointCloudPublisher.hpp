@@ -11,6 +11,8 @@
 #include <sensor_msgs/msg/laser_scan.hpp>
 #include <sensor_msgs/msg/point_cloud2.hpp>
 #include <laser_geometry/laser_geometry.hpp>
+#include "pcl_conversions/pcl_conversions.h"
+//#include "sensor_msgs/point_cloud2_iterator.hpp"
 
 using namespace std::placeholders;
 using std::placeholders::_1;

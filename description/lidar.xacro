@@ -5,23 +5,23 @@
     <joint name="lidar_joint" type="fixed">
         <parent link="mounting_plate_base"/>
         <child link="lidar_sensor"/>
-        <origin xyz="0 0 0.045" rpy="0 0 ${pi}"/>
+        <origin xyz="0 0 0.0466" rpy="0 0 ${pi}"/> <!-- Or 51.6mm depending on top vs base-->
     </joint>
 
 
     <link name="lidar_sensor">
         <visual>
-            <origin xyz="0 0 -0.00125"/>
+            <origin xyz="0 0 0"/>
             <geometry>
-                <cylinder radius="0.035" length="0.0225"/>
+                <cylinder radius="0.035" length="0.018"/>
                 <!-- <mesh filename="file://$(find lidar_converter)/description/RPLiDAR.stl" scale="1 1 1"/> -->
             </geometry>
             <material name="black"/>
         </visual>
         <collision>
-            <origin xyz="0 0 -0.00125"/>
+            <origin xyz="0 0 -0.009"/>
             <geometry>
-                <cylinder radius="0.035" length="0.0225"/>
+                <cylinder radius="0.035" length="0.018"/>
             </geometry>
         </collision>
     </link>
