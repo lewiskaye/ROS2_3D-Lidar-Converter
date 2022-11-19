@@ -15,6 +15,7 @@
 #include "tf2/LinearMath/Quaternion.h"
 #include <tf2_geometry_msgs/tf2_geometry_msgs.hpp>
 #include "rclcpp_components/register_node_macro.hpp"
+#include "pcl_conversions/pcl_conversions.h"
 
 
 // Custom Imports
@@ -39,6 +40,10 @@ class StepperMotorClient : public rclcpp::Node
         rclcpp::TimerBase::SharedPtr timer_;
         rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr pc_subscription;
         rclcpp::Subscription<sensor_msgs::msg::Imu>::SharedPtr imu_subscription;
+
+        // Hold the final point cloud
+        pcl::PointCloud<pcl::PointXYZI> pcl_final;
+
         bool levelled = false;
         bool scanning = false;
         float latest_pitch = 999.9;

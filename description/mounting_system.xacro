@@ -36,16 +36,16 @@
 
     <link name="mounting_plate_arm">
         <visual>
-            <origin xyz="0 -0.002 -0.0075"/>
+            <origin xyz="0 -0.004 -0.003"/>
             <geometry>
-                <box size="0.025 0.004 0.035"/>
+                <box size="0.040 0.008 0.030"/>
             </geometry>
-            <material name="red"/>
+            <material name="white"/>
         </visual>
         <collision>
-            <origin xyz="0 -0.002 -0.0075"/>
+            <origin xyz="0 -0.004 -0.003"/>
             <geometry>
-                <box size="0.025 0.004 0.035"/>
+                <box size="0.040 0.008 0.030"/>
             </geometry>
         </collision>
     </link>
@@ -53,21 +53,21 @@
     <joint name="mounting_plate_base_joint" type="fixed">
         <parent link="mounting_plate_arm"/>
         <child link="mounting_plate_base"/>
-        <origin xyz="0 -0.039 -0.021"/>
+        <origin xyz="0 -0.0455 -0.013"/>
     </joint>
 
     <link name="mounting_plate_base">
         <visual>
-            <origin xyz="0 0 -0.002"/>
+            <origin xyz="0 0 -0.0025"/>
             <geometry>
-                <box size="0.09 0.07 0.004"/>
+                <box size="0.09 0.075 0.005"/>
             </geometry>
-            <material name="red"/>
+            <material name="white"/>
         </visual>
         <collision>
             <origin xyz="0 0 -0.002"/>
             <geometry>
-                <box size="0.09 0.07 0.004"/>
+                <box size="0.09 0.075 0.005"/>
             </geometry>
         </collision>
     </link>

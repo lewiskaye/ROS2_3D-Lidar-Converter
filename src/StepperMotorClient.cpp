@@ -12,7 +12,7 @@ StepperMotorClient::StepperMotorClient() : Node("stepper_client")
     pc_subscription = this->create_subscription<sensor_msgs::msg::PointCloud2>("scan3d", rclcpp::QoS(rclcpp::SensorDataQoS()) /*QoS for sensors (best effort etc)*/, std::bind(&StepperMotorClient::scan_callback, this, _1));
     // Create an IMU Subscription to track the angle on the 'imu/imu' topic (Not currently in use)
     //imu_subscription = this->create_subscription<sensor_msgs::msg::Imu>("imu/imu", rclcpp::QoS(rclcpp::SensorDataQoS()) /*QoS for sensors (best effort etc)*/, std::bind(&StepperMotorClient::imu_callback, this, _1));
-    // Timer to automatically capture scan after 0.2s
+    // Timer to automatically capture scan after 0.2s delay
     this->timer_ = this->create_wall_timer(std::chrono::milliseconds(200), std::bind(&StepperMotorClient::capture_scan, this));
 }
 
@@ -66,12 +66,20 @@ void StepperMotorClient::capture_scan()
 // Called every time the node recieves a PointCloud2 Scan Message on the topic scan3d
 void StepperMotorClient::scan_callback(const sensor_msgs::msg::PointCloud2 & pc_msg)
 {
+    std::cout << "SCAN CALLBACK" << std::endl;
     // Check if node in scanning state
     if (this->scanning == true) {
-        RCLCPP_INFO(this->get_logger(), "[SCAN] Point Cloud Scan Successfully Starting...");
+        RCLCPP_INFO(this->get_logger(), "[SCAN] Point Cloud Scan Successfully Called...");
+
+
+        pcl::fromROSMsg(pc_msg, pcl_final);
+        // Transform Scan according to TF
+
+        // Concatenate/append scans together here
+
     }
 
-    // Concatenate scans together here
+    
     //TODO
 }
 

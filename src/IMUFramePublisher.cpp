@@ -8,7 +8,7 @@
 IMUFramePublisher::IMUFramePublisher() : Node("imu_frame_publisher") 
 {
     // Declare and acquire 'child_frame' parameter
-    child_frame_ = this->declare_parameter<std::string>("imu_frame", "base_link");
+    child_frame_ = this->declare_parameter<std::string>("imu_frame", "imu_angle_adjustment");
 
     // Time for testing putposes every 1s TODO - Disable for production
     //timer_ = this->create_wall_timer(10ms, std::bind(&IMUFramePublisher::test_data, this));
@@ -66,7 +66,9 @@ void IMUFramePublisher::handle_imu(const std::shared_ptr<sensor_msgs::msg::Imu> 
 
     // Send the transformation
     tf_broadcaster_->sendTransform(t);
-    RCLCPP_INFO(this->get_logger(), "IMU TF Published");  
+    
+    //Log - Disabled due to too many prints
+    //RCLCPP_INFO(this->get_logger(), "IMU TF Published");  
 }
 
 void IMUFramePublisher::test_data()

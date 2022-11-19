@@ -25,12 +25,20 @@ find_package(geometry_msgs REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
 find_package(example_interfaces REQUIRED)
 find_package(custom_interfaces REQUIRED)
+find_package(pcl_conversions REQUIRED)
+find_package(PCL 1.8 REQUIRED)
+#1.3 alternative
 #ament_auto_find_build_dependencies(REQUIRED sensor_msgs)
 
+# PCL
+include_directories(${PCL_INCLUDE_DIRS})
+link_directories(${PCL_LIBRARY_DIRS})
+add_definitions(${PCL_DEFINITIONS})
 
 # Converter Node
 add_executable(converter_2d_to_3d src/converter_2d_to_3d.cpp src/LidarSubscriber.cpp src/PointCloudPublisher.cpp)
-ament_target_dependencies(converter_2d_to_3d rclcpp std_msgs sensor_msgs laser_geometry)
+target_link_libraries(converter_2d_to_3d ${PCL_LIBRARIES})
+ament_target_dependencies(converter_2d_to_3d rclcpp std_msgs sensor_msgs laser_geometry pcl_conversions)
 target_include_directories(converter_2d_to_3d PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
@@ -46,7 +54,8 @@ target_compile_features(imu PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
 
 # Capture Scan Client Node
 add_executable(capture_scan src/capture_scan.cpp src/StepperMotorClient.cpp)
-ament_target_dependencies(capture_scan custom_interfaces rclcpp rclcpp_action rclcpp_components std_msgs sensor_msgs tf2 tf2_geometry_msgs)
+target_link_libraries(capture_scan ${PCL_LIBRARIES})
+ament_target_dependencies(capture_scan custom_interfaces rclcpp rclcpp_action rclcpp_components std_msgs sensor_msgs tf2 tf2_geometry_msgs pcl_conversions)
 target_include_directories(capture_scan PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)

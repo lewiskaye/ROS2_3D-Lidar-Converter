@@ -5,21 +5,21 @@
     <joint name="imu_joint" type="fixed">
         <parent link="mounting_plate_base"/>
         <child link="imu_sensor"/>
-        <origin xyz="0 0 0.02" rpy="0 0 0"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
     </joint>
 
     <link name="imu_sensor">
         <visual>
-            <origin xyz="0 0 0"/>
+            <origin xyz="0 0 0.002"/>
             <geometry>
-                <box size="0.025 0.02 0.005"/>
+                <box size="0.025 0.02 0.004"/>
             </geometry>
             <material name="red"/>
         </visual>
         <collision>
             <origin xyz="0 0 0"/>
             <geometry>
-                <box size="0.025 0.02 0.005"/>
+                <box size="0.025 0.02 0.004"/>
             </geometry>
         </collision>
     </link>

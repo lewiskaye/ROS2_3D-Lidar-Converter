@@ -10,7 +10,7 @@
     "workspace_dir": "/home/${config:username}/Workspaces/ros2_ws", // The path to your current ROS Workspace Folder (eg. ros2_ws)
     "package_name": "lidar_converter", // The name of the Package you want to develop/test/run in debug mode
     "node_name": "converter_2d_to_3d", // The name of the Node you want to debug
-    "launch_file": "view_lidar_converter_launch.py", // The name of the launch file you want to run your soloution with (if applicable)
+    "launch_file": "view_and_launch_nolidar.py", // The name of the launch file you want to run your soloution with (if applicable)
     "commands_before_launch": ":", // If you have any other commands you need running before starting the build/run, enter them here!  (e.g. Dependencies such as the simulator).  Default = :
     //"commands_before_launch": "ros2 launch slamtec_rplidar_ros2 view_rplidar_launch.py", // If you have any other commands you need running before starting the build/run, enter them here!  (e.g. Dependencies such as the simulator).  Default = :
     "DCMAKE_BUILD_TYPE": "Debug", // THe build mode you want the colcon compiler to use - default: Debug
