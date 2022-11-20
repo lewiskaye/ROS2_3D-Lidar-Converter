@@ -1,5 +1,3 @@
-//TODO Description
-
 // Include from standard C libraries
 #include <chrono>
 #include <cstdio>

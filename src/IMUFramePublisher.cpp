@@ -1,4 +1,6 @@
-//TODO Description
+// This file is responsible for the handling of the IMU
+// including publishing the Transformations to the
+// Point Cloud to rotate in 3D Space
 
 // Definitions are placed in the header file
 #include "../include/IMUFramePublisher.hpp"
@@ -10,17 +12,14 @@ IMUFramePublisher::IMUFramePublisher() : Node("imu_frame_publisher")
     // Declare and acquire 'child_frame' parameter
     child_frame_ = this->declare_parameter<std::string>("imu_frame", "imu_angle_adjustment");
 
-    // Time for testing putposes every 1s TODO - Disable for production
+    // Time for testing purposes every 1s - Disable for production
     //timer_ = this->create_wall_timer(10ms, std::bind(&IMUFramePublisher::test_data, this));
     //test_publisher_ = this->create_publisher<sensor_msgs::msg::Imu>("imu/imu", 10);
 
-    //Another method - subscribe to 3D PCD Topic and publish IMU readings only at that time - more efficient?
-
     // Create a transform broadcaster
     tf_broadcaster_ = std::make_unique<tf2_ros::TransformBroadcaster>(*this);
-    //publisher = this->create_publisher<sensor_msgs::msg::PointCloud2>("imu", rclcpp::QoS(rclcpp::SensorDataQoS()));
 
-    // Subscribe to IMU data/msg/pose topic and call handle_imu callback function on each message
+    // Subscribe to IMU orientation topic and call handle_imu callback function on each message
     imu_subscription_ = this->create_subscription<sensor_msgs::msg::Imu>(
         "imu/imu", 
         rclcpp::QoS(rclcpp::SensorDataQoS()) /*QoS for sensors (best effort etc)*/,
@@ -48,25 +47,18 @@ void IMUFramePublisher::handle_imu(const std::shared_ptr<sensor_msgs::msg::Imu> 
     // Set Rotation based on the IMU's magnetometer readings
     //  ROS uses Quaternions for superior computational efficiency
     //  Since the IMU Message already contains a Quaternion, it can be passed straight through to the transform
-    // t.transform.rotation.x = msg->orientation.x;
-    // t.transform.rotation.y = msg->orientation.y;
-    // t.transform.rotation.z = msg->orientation.z;
-    // t.transform.rotation.z = (msg->orientation.w);
-    
-    
     t.transform.rotation = msg->orientation; 
-    //t.transform.rotation
     
-    // Unused code that may be useful later when integrating with a real IMU
-    /* tf2::Quaternion q;
+    // Send the transformation
+    tf_broadcaster_->sendTransform(t);
+
+    /* Unused code that may be useful - 
+    tf2::Quaternion q;
     q.setRPY(msg->orientation.x, msg->orientation.y, msg->orientation.z); // TODO Modify this to access RPY from IMU
     //q.setW(msg->orientation.w);
     q.normalize();
     t.transform.rotation.x = q.x(); */
 
-    // Send the transformation
-    tf_broadcaster_->sendTransform(t);
-    
     //Log - Disabled due to too many prints
     //RCLCPP_INFO(this->get_logger(), "IMU TF Published");  
 }

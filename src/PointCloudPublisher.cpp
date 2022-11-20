@@ -1,4 +1,6 @@
-//TODO Description
+// This file is responsible for actually taking a Point Cloud
+// passed in, and publishing it as a Point Cloud for
+// any other ROS packages to use as a topic.  
 
 // Definitions are placed in the header file
 #include "../include/PointCloudPublisher.hpp"
@@ -14,8 +16,6 @@ PointCloudPublisher::PointCloudPublisher() : Node("converter_2d_to_3d")
 // Method invoked when an new message is detected from the topic
 void PointCloudPublisher::publish_pointcloud(sensor_msgs::msg::PointCloud2 &pc)
 {
-    //Place Logic here if needed
-
     //Publish Point Cloud
     publisher->publish(pc);
     
