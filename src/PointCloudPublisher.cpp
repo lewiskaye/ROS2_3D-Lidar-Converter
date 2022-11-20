@@ -26,7 +26,7 @@ void PointCloudPublisher::publish_pointcloud(sensor_msgs::msg::PointCloud2 &pc)
     pcl::PointCloud<pcl::PointXYZI> pcl_cloud;
     pcl::fromROSMsg(pc, pcl_cloud);
     
-    std::cout << pcl_cloud.points[0].x << pcl_cloud.points[0].y << pcl_cloud.points[0].z << std::endl;
+    //std::cout << pcl_cloud.points[0].x << pcl_cloud.points[0].y << pcl_cloud.points[0].z << std::endl;
 
     // for (auto point = pcl_cloud.points.begin(); point != pcl_cloud.points.end(); ++point) {
     //     std::cout << point->x << std::endl;
