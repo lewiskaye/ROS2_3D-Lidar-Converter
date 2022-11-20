@@ -1,4 +1,4 @@
-// This File (executable) is an entry point for the IMU Frame Publisher - responsible for taking the Quaternion Data from the IMU topic and publishing the relevent TF
+// This is an entry point for the IMU Frame Publisher - responsible for taking the Quaternion Data from the IMU topic and publishing the relevent TF
 
 #include "../include/imu.hpp"
 using std::placeholders::_1;

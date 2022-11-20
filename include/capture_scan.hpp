@@ -1,5 +1,3 @@
-//TODO Description
-
 // C++ Imports
 #include <cstdio>
 #include <memory>

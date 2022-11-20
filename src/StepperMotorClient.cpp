@@ -1,3 +1,6 @@
+// This file is responsible for taking a scan
+// and communicating with the stepper motor
+
 #include "../include/StepperMotorClient.hpp"
 using std::placeholders::_1;
 
@@ -8,10 +11,13 @@ StepperMotorClient::StepperMotorClient() : Node("stepper_client")
     this->move_motor_client_ptr_ = rclcpp_action::create_client<StepperMotor>(this, "move_motor");
     this->level_motor_client_ptr_ = rclcpp_action::create_client<Level>(this, "level_motor");
     this->level_client = rclcpp_action::create_client<Level>(this, "level_motor");
+
     // Subscribe to the '/scan3d' topic to capture scan data
     pc_subscription = this->create_subscription<sensor_msgs::msg::PointCloud2>("scan3d", rclcpp::QoS(rclcpp::SensorDataQoS()) /*QoS for sensors (best effort etc)*/, std::bind(&StepperMotorClient::scan_callback, this, _1));
+    
     // Create an IMU Subscription to track the angle on the 'imu/imu' topic (Not currently in use)
     //imu_subscription = this->create_subscription<sensor_msgs::msg::Imu>("imu/imu", rclcpp::QoS(rclcpp::SensorDataQoS()) /*QoS for sensors (best effort etc)*/, std::bind(&StepperMotorClient::imu_callback, this, _1));
+    
     // Timer to automatically capture scan after 0.2s delay
     this->timer_ = this->create_wall_timer(std::chrono::milliseconds(200), std::bind(&StepperMotorClient::capture_scan, this));
 }
@@ -75,12 +81,10 @@ void StepperMotorClient::scan_callback(const sensor_msgs::msg::PointCloud2 & pc_
         pcl::fromROSMsg(pc_msg, pcl_final);
         // Transform Scan according to TF
 
-        // Concatenate/append scans together here
+        // TODO Append PCL scans together here
 
     }
 
-    
-    //TODO
 }
 
 // Send a command to level the Servo motor using the IMU

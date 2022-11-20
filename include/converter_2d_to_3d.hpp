@@ -1,5 +1,3 @@
-//TODO Description
-
 // Include Statements
 #include <cstdio>
 #include <memory>

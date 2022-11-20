@@ -1,4 +1,5 @@
-//TODO Description
+// This is the entry point for the main LiDAR Converter Node
+// Which converts from 2D Scans to 3D Point Clouds
 
 #include "../include/converter_2d_to_3d.hpp"
 using std::placeholders::_1;
@@ -15,10 +16,6 @@ int main(int argc, char ** argv)
   rclcpp::spin(std::make_shared<LidarSubscriber>());
 
   // Point Cloud Publisher is implimented within the subscriber (no extra call needed)
-
-  // Spin the Capture Scan??
-
-
 
   //Exit Node
   rclcpp::shutdown();
