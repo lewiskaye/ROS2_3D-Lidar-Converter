@@ -71,15 +71,33 @@ install(DIRECTORY description launch rviz
 
 #Testing
 if(BUILD_TESTING)
-  find_package(ament_lint_auto REQUIRED)
-  # the following line skips the linter which checks for copyrights
-  # comment the line when a copyright and license is added to all source files
-  set(ament_cmake_copyright_FOUND TRUE)
-  # the following line skips cpplint (only works in a git repo)
-  # comment the line when this package is in a git repo and when
-  # a copyright and license is added to all source files
-  set(ament_cmake_cpplint_FOUND TRUE)
-  ament_lint_auto_find_test_dependencies()
+  # find_package(ament_lint_auto REQUIRED)
+  # # the following line skips the linter which checks for copyrights
+  # # comment the line when a copyright and license is added to all source files
+  # set(ament_cmake_copyright_FOUND TRUE)
+  # # the following line skips cpplint (only works in a git repo)
+  # # comment the line when this package is in a git repo and when
+  # # a copyright and license is added to all source files
+  # set(ament_cmake_cpplint_FOUND TRUE)
+  # ament_lint_auto_find_test_dependencies()
+
+  # Find GoogleTest
+  find_package(ament_cmake_gtest REQUIRED)
+
+  set(TESTFILES
+    test/main.cpp
+    test/lidar_converter_test.cpp
+    test/imu_test.cpp)
+
+  # Add gtest executables
+  ament_add_gtest(${PROJECT_NAME}_test ${TESTFILES})
+  #target_link_libraries(${PROJECT_NAME}_test my_lib) #CHANGE
+
+  install(TARGETS
+    ${PROJECT_NAME}_test
+    # Install the generated test executable file to the path after DESTINATION
+    DESTINATION lib/${PROJECT_NAME})
+
 endif()
 
 ament_package()
