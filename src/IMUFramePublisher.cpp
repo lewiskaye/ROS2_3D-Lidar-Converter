@@ -95,3 +95,7 @@ void IMUFramePublisher::test_data()
     test_publisher_->publish(message);
 }
 
+IMUFramePublisher::~IMUFramePublisher() {
+    // Dispose Cleanly
+    rclcpp::shutdown();
+}

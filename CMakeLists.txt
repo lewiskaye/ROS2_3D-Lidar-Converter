@@ -92,7 +92,7 @@ if(BUILD_TESTING)
 
   # Add gtest executables
   ament_add_gtest(${PROJECT_NAME}_test ${TESTFILES})
-  ament_target_dependencies(${PROJECT_NAME}_test rclcpp rclcpp_action rclcpp_components std_msgs sensor_msgs laser_geometry tf2 tf2_ros geometry_msgs tf2_geometry_msgs example_interfaces custom_interfaces pcl_conversions)
+  ament_target_dependencies(${PROJECT_NAME}_test rclcpp rclcpp_action rclcpp_components std_msgs sensor_msgs laser_geometry tf2 tf2_ros geometry_msgs tf2_geometry_msgs example_interfaces custom_interfaces pcl_conversions PCL)
 
 
   install(TARGETS

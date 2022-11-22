@@ -24,7 +24,8 @@ class IMUFramePublisher : public rclcpp::Node
 {
 public:
   IMUFramePublisher();
-  
+  virtual ~IMUFramePublisher();
+
   // Generates the Transform used in Handle IMU Callback
   geometry_msgs::msg::TransformStamped generate_transform(geometry_msgs::msg::Quaternion orientation);
   

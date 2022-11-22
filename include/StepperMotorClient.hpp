@@ -16,6 +16,7 @@
 #include <tf2_geometry_msgs/tf2_geometry_msgs.hpp>
 #include "rclcpp_components/register_node_macro.hpp"
 #include "pcl_conversions/pcl_conversions.h"
+#include <pcl/point_types.h>
 
 
 // Custom Imports

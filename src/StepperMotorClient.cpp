@@ -79,6 +79,13 @@ void StepperMotorClient::scan_callback(const sensor_msgs::msg::PointCloud2 & pc_
 
 
         pcl::fromROSMsg(pc_msg, pcl_final);
+
+        //DEBUG
+        printf ("Cloud: width = %d, height = %d\n", pc_msg.width, pc_msg.height);
+        for(auto &pt : pcl_final.points) {
+            printf ("\t(%f, %f, %f)\n", pt.x, pt.y, pt.z);
+        }
+
         // Transform Scan according to TF
 
         // TODO Append PCL scans together here

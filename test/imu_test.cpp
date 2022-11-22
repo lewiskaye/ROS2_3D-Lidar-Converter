@@ -58,7 +58,7 @@ TEST(IMUTestSuite, TestTransforms) {
         EXPECT_EQ(t.transform.translation.z, 0);
     }
 
-    // Test Bad Values
+    // Test Bad Values??
     for(int b : values_bad) {
         //Generate fake msg
         auto msg = generate_msg(b, b, b);
