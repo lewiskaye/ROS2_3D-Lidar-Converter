@@ -82,9 +82,8 @@ void StepperMotorClient::scan_callback(const sensor_msgs::msg::PointCloud2 & pc_
         pcl::fromROSMsg(pc_msg, pcl);
 
         //DEBUG
-        PointCloudTools::PrintPointCloudInfo(pc_msg);
-        PointCloudTools::PrintPointCloud(pcl);
-        //DEBUG
+        // PointCloudTools::PrintPointCloudInfo(pc_msg);
+        // PointCloudTools::PrintPointCloud(pcl);
 
         // Transform Scan according to TF
 
