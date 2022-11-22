@@ -2,11 +2,13 @@
 #include "../include/LidarSubscriber.hpp"
 #include "../include/PointCloudTools.hpp"
 
+
 // SanityCheck - should always return true
 TEST(LidarConverterTestSuite, SanityCheck) {
     EXPECT_TRUE(true);
 }
 
+// Generates a test laserscan message with test data
 sensor_msgs::msg::LaserScan generate_test_laserscan(double ranges[], unsigned int num_readings) {
     sensor_msgs::msg::LaserScan scan;
     //unsigned int num_readings = 4;
@@ -32,21 +34,7 @@ sensor_msgs::msg::LaserScan generate_test_laserscan(double ranges[], unsigned in
     return scan;
 }
 
-/*pcl::PointCloud<pcl::PointXYZI> laserscan_to_pcl(sensor_msgs::msg::LaserScan scan) {
-    // Define a Point Cloud to store points in 3D Space
-    sensor_msgs::msg::PointCloud2 cloud;
-    pcl::PointCloud<pcl::PointXYZI> pcl;
-
-    // Define a projector to project laserscan to a 3D Point Cloud
-    laser_geometry::LaserProjection projector;
-    projector.projectLaser(scan, cloud);
-
-    pcl::fromROSMsg(cloud, pcl);
-
-    return pcl;
-}*/
-
-
+// Tests the conversion from LaserScan to PointCloud, and verifies coordinates are in the correct locations
 TEST(LidarConverterTestSuite, TestLaserScanToPointCloud2) {
     // Generate fake scan message with fake points
     double test_ranges[] = {1,2,3,4};
@@ -60,6 +48,8 @@ TEST(LidarConverterTestSuite, TestLaserScanToPointCloud2) {
     EXPECT_NEAR(pcl.points[3].y, test_ranges[3], 0.1);
 }
 
+
+// Tests the LaserSan to PointCloud convertsion with abnormal values
 TEST(LidarConverterTestSuite, TestAbnormalValues) {
     // Generate fake scan message with fake points
     double test_ranges[] = {4.1321564,-4,13,99999};

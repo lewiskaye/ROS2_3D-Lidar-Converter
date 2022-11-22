@@ -1,5 +1,4 @@
 #include "gtest/gtest.h"
-//#include "../include/imu.hpp"
 #include "../include/IMUFramePublisher.hpp"
 #include <tf2_geometry_msgs/tf2_geometry_msgs.hpp>
 
@@ -24,7 +23,6 @@ sensor_msgs::msg::Imu generate_msg(int r, int p, int y) {
     q_tf.normalize();
 
     message.orientation = tf2::toMsg(q_tf);
-
     return message;
 }
 
@@ -74,7 +72,38 @@ TEST(IMUTestSuite, TestTransforms) {
         EXPECT_EQ(t.transform.translation.y, 0);
         EXPECT_EQ(t.transform.translation.z, 0);
     }
-    //rclcpp::shutdown();
 }
 
-// Test Quaternions Code
+// Test Quaternions
+TEST(IMUTestSuite, TestQuaternions) {
+    rclcpp::init(0, nullptr);
+    //auto test_obj = std::make_shared<IMUFramePublisher>();
+
+    // Generate Values
+    float values_in[][3] = 
+        {{0,0,0},
+        {180,0,0},
+        {0,0,-180}};
+    float values_out[][4] = 
+        {{0,0,0,1},
+        {1,0,0,0},
+        {0,0,-1,0}};
+
+    // Test Good Values
+    for(int i = 0; i < 3; i++) {
+        //Generate fake msg
+        auto msg = generate_msg(values_in[i][0], values_in[i][1], values_in[i][2]);
+
+        tf2::Quaternion q;
+        q.setRPY(values_in[i][0], values_in[i][1], values_in[i][2]);
+
+        // Test Transforms are same as orientation values
+        EXPECT_NEAR(q.getX(), values_out[i][0],0.11);
+        EXPECT_NEAR(q.getY(), values_out[i][1],0.11);
+        EXPECT_NEAR(q.getZ(), values_out[i][2],0.11);
+        // EXPECT_FLOAT_EQ(msg.orientation.x, values_out[i][0]);
+        // EXPECT_FLOAT_EQ(msg.orientation.y, values_out[i][1]);
+        // EXPECT_FLOAT_EQ(msg.orientation.z, values_out[i][2]);
+        // EXPECT_FLOAT_EQ(msg.orientation.w, values_out[i][3]);
+    }
+}
