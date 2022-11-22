@@ -47,9 +47,11 @@ void LidarSubscriber::scan_callback(const sensor_msgs::msg::LaserScan & scan_msg
     //std::cout << "Point Cloud @90: " << cloud.data[90] << "\n";
 }
 
+
+
 LidarSubscriber::~LidarSubscriber()
 {
-    // Dispose Clenly
+    // Dispose Cleanly
     rclcpp::shutdown();
 }
 

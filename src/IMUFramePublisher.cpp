@@ -31,6 +31,25 @@ IMUFramePublisher::IMUFramePublisher() : Node("imu_frame_publisher")
 void IMUFramePublisher::handle_imu(const std::shared_ptr<sensor_msgs::msg::Imu> msg)
 {
     // Declare new Transfor Message
+    geometry_msgs::msg::TransformStamped t = generate_transform(msg->orientation);
+    
+    // Send the transformation
+    tf_broadcaster_->sendTransform(t);
+
+
+    /* Unused code that may be useful - 
+    tf2::Quaternion q;
+    q.setRPY(msg->orientation.x, msg->orientation.y, msg->orientation.z); // TODO Modify this to access RPY from IMU
+    //q.setW(msg->orientation.w);
+    q.normalize();
+    t.transform.rotation.x = q.x(); */
+
+    //Log - Disabled due to too many prints
+    //RCLCPP_INFO(this->get_logger(), "IMU TF Published");  
+}
+
+geometry_msgs::msg::TransformStamped IMUFramePublisher::generate_transform(geometry_msgs::msg::Quaternion orientation) {
+    // Declare new Transfor Message
     geometry_msgs::msg::TransformStamped t;
     
     // Set Transform Frames with Child from Specified Parameter
@@ -47,20 +66,10 @@ void IMUFramePublisher::handle_imu(const std::shared_ptr<sensor_msgs::msg::Imu> 
     // Set Rotation based on the IMU's magnetometer readings
     //  ROS uses Quaternions for superior computational efficiency
     //  Since the IMU Message already contains a Quaternion, it can be passed straight through to the transform
-    t.transform.rotation = msg->orientation; 
-    
-    // Send the transformation
-    tf_broadcaster_->sendTransform(t);
+    t.transform.rotation = orientation;
 
-    /* Unused code that may be useful - 
-    tf2::Quaternion q;
-    q.setRPY(msg->orientation.x, msg->orientation.y, msg->orientation.z); // TODO Modify this to access RPY from IMU
-    //q.setW(msg->orientation.w);
-    q.normalize();
-    t.transform.rotation.x = q.x(); */
-
-    //Log - Disabled due to too many prints
-    //RCLCPP_INFO(this->get_logger(), "IMU TF Published");  
+    // Return Transform
+    return t;
 }
 
 void IMUFramePublisher::test_data()
@@ -86,3 +95,7 @@ void IMUFramePublisher::test_data()
     test_publisher_->publish(message);
 }
 
+IMUFramePublisher::~IMUFramePublisher() {
+    // Dispose Cleanly
+    rclcpp::shutdown();
+}

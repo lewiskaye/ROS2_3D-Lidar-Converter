@@ -12,11 +12,10 @@
 #include <tf2_geometry_msgs/tf2_geometry_msgs.hpp>
 #include "tf2/LinearMath/Quaternion.h"
 #include "tf2_ros/transform_broadcaster.h"
-//#include "turtlesim/msg/pose.hpp"
-
 #include <sensor_msgs/msg/imu.hpp>
 //#include <sensor_msgs/msg/laser_scan.hpp>
 //#include <laser_geometry/laser_geometry.hpp>
+#include "gtest/gtest.h"
 
 using std::placeholders::_1;
 using namespace std::chrono_literals;
@@ -25,7 +24,10 @@ class IMUFramePublisher : public rclcpp::Node
 {
 public:
   IMUFramePublisher();
-  
+  virtual ~IMUFramePublisher();
+
+  // Generates the Transform used in Handle IMU Callback
+  geometry_msgs::msg::TransformStamped generate_transform(geometry_msgs::msg::Quaternion orientation);
   
 private:
   // Subscriber to handle messges containing the IMU's raw/processed data
@@ -40,4 +42,8 @@ private:
 
   // Publishes test ROS2-IMU messages
   void test_data();
+
+  // Declare Tests as Friends to test private callback methods
+  // FRIEND_TEST(IMUTestSuite, TestTransforms);
+  // FRIEND_TEST(IMUTestSuite, TestNegativeTransforms);
 };
