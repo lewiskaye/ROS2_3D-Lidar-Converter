@@ -19,6 +19,7 @@ public:
     static void PrintPointCloud(pcl::PointCloud<pcl::PointXYZI> cloud);
     static void PrintPointCloudInfo(sensor_msgs::msg::PointCloud2 cloud);
     static pcl::PointCloud<pcl::PointXYZI> laserscan_to_pcl(sensor_msgs::msg::LaserScan scan);
+    static sensor_msgs::msg::LaserScan generate_random_laserscan(unsigned int num_readings = 360, double laser_frequency = 50);
 
 private:
 
