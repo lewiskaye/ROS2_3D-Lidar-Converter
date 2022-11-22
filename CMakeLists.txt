@@ -87,11 +87,13 @@ if(BUILD_TESTING)
   set(TESTFILES
     test/main.cpp
     test/lidar_converter_test.cpp
-    test/imu_test.cpp)
+    test/imu_test.cpp
+    src/IMUFramePublisher.cpp)
 
   # Add gtest executables
   ament_add_gtest(${PROJECT_NAME}_test ${TESTFILES})
-  #target_link_libraries(${PROJECT_NAME}_test my_lib) #CHANGE
+  ament_target_dependencies(${PROJECT_NAME}_test rclcpp rclcpp_action rclcpp_components std_msgs sensor_msgs laser_geometry tf2 tf2_ros geometry_msgs tf2_geometry_msgs example_interfaces custom_interfaces pcl_conversions)
+
 
   install(TARGETS
     ${PROJECT_NAME}_test
