@@ -77,19 +77,24 @@ void StepperMotorClient::scan_callback(const sensor_msgs::msg::PointCloud2 & pc_
     if (this->scanning == true) {
         RCLCPP_INFO(this->get_logger(), "[SCAN] Point Cloud Scan Successfully Called...");
 
-
-        pcl::fromROSMsg(pc_msg, pcl_final);
+        // Create a new PCL Point Cloud object
+        pcl::PointCloud<pcl::PointXYZI> pcl;
+        pcl::fromROSMsg(pc_msg, pcl);
 
         //DEBUG
-        printf ("Cloud: width = %d, height = %d\n", pc_msg.width, pc_msg.height);
-        for(auto &pt : pcl_final.points) {
-            printf ("\t(%f, %f, %f)\n", pt.x, pt.y, pt.z);
-        }
+        PointCloudTools::PrintPointCloudInfo(pc_msg);
+        PointCloudTools::PrintPointCloud(pcl);
+        //DEBUG
 
         // Transform Scan according to TF
 
-        // TODO Append PCL scans together here
-
+        // Append PCL scans together into the final scan
+        pcl_final += pcl;
+    }
+    // Once finished (by checking if pcl_final has anything in it)
+    else if(pcl_final.empty()) {
+        // Finished Scan
+        //Export Point Cloud TODO
     }
 
 }

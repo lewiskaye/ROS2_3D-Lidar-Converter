@@ -77,11 +77,6 @@ pcl::PointCloud<pcl::PointXYZI> laserscan_to_pcl(sensor_msgs::msg::LaserScan sca
     return pcl;
 }
 
-void PrintPointCloud(pcl::PointCloud<pcl::PointXYZI> cloud){
-    for(auto &pt : cloud.points) {
-        printf ("\t(%f, %f, %f)\n", pt.x, pt.y, pt.z);
-    }
-}
 
 TEST(LidarConverterTestSuite, TestLaserScanToPointCloud2) {
     // Generate fake scan message with fake points
@@ -103,7 +98,6 @@ TEST(LidarConverterTestSuite, TestAbnormalValues) {
     sensor_msgs::msg::LaserScan scan = generate_test_laserscan(test_ranges, 4);
     pcl::PointCloud<pcl::PointXYZI> pcl = laserscan_to_pcl(scan);
 
-    PrintPointCloud(pcl);
     EXPECT_NEAR(pcl.points[0].x, -test_ranges[0], 0.1);
     EXPECT_NE(pcl.points[1].y, -test_ranges[1]);
     EXPECT_NE(pcl.points[2].x, test_ranges[2]);

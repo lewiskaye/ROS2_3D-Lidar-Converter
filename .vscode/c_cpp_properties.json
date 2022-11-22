@@ -21,7 +21,8 @@
                 "${config:workspace_dir}/src/custom_interfaces/include/**",
                 "${config:workspace_dir}/install/custom_interfaces/include/**",
                 "/opt/ros/humble/include/sensor_msgs",
-                "/opt/ros/humble/include/example_interfaces"
+                "/opt/ros/humble/include/example_interfaces",
+                "/opt/ros/humble/include/laser_geometry"
             ],
             "name": "ROS",
             "intelliSenseMode": "gcc-x64",

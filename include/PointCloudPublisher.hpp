@@ -21,6 +21,7 @@ public:
   PointCloudPublisher();
   //virtual ~PointCloudPublisher();
   void publish_pointcloud(sensor_msgs::msg::PointCloud2 &pc);
+  void PrintPointCloud(pcl::PointCloud<pcl::PointXYZI> cloud);
 
 private:
   rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr publisher;
